@@ -82,10 +82,29 @@
 
 <div class="report-container">
     <h1>INFORME DE PROYECTO: MINERÍA DE DATOS (EVALUACIÓN 2)</h1>
-    <p><strong>Contexto:</strong> Análisis de Afiliados Activos con Diagnóstico de Diabetes Mellitus (SIS) integrado con estimaciones poblacionales del INEI.</p>
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin-bottom: 30px; border: 1px solid #eee;">
+        <h2 style="margin-top: 0; color: #1a4b84; border-bottom: none;">Índice</h2>
+        <ul style="list-style-type: none; padding-left: 0; line-height: 1.8; font-weight: bold;">
+            <li><a href="#introduccion" style="text-decoration: none; color: #2c3e50;">Introducción</a></li>
+            <li><a href="#seccion1" style="text-decoration: none; color: #2c3e50;">1. Selección de Datos</a></li>
+            <li><a href="#seccion2" style="text-decoration: none; color: #2c3e50;">2. Incorporación de Datos de Otras Fuentes</a></li>
+            <li><a href="#seccion3" style="text-decoration: none; color: #2c3e50;">3. Limpieza de Datos</a></li>
+            <li><a href="#seccion4" style="text-decoration: none; color: #2c3e50;">4. Codificación de Datos</a></li>
+            <li><a href="#seccion5" style="text-decoration: none; color: #2c3e50;">5. Normalización de Datos</a></li>
+            <li><a href="#seccion6" style="text-decoration: none; color: #2c3e50;">6. Aplicación de Principales Estadísticos</a></li>
+            <li><a href="#seccion7" style="text-decoration: none; color: #2c3e50;">7. Enfoques de Reglas de Asociación</a></li>
+            <li><a href="#seccion8" style="text-decoration: none; color: #2c3e50;">8. Aplicación de Modelo de Regresión</a></li>
+            <li><a href="#seccion9" style="text-decoration: none; color: #2c3e50;">9. Acciones Inferidas en Base a los Resultados</a></li>
+            <li><a href="#seccion10" style="text-decoration: none; color: #2c3e50;">10. Conclusión y Acciones a Realizar</a></li>
+        </ul>
+    </div>
+
+    <h2 id="introduccion">Introducción</h2>
+    <p>En el ámbito de la salud pública, la toma de decisiones fundamentada en datos resulta crítica para optimizar recursos clínicos y financieros. El presente informe aborda el desarrollo de un pipeline integral de Minería de Datos aplicado sobre una muestra masiva de 600.000 registros de afiliados diagnosticados con diabetes del Seguro Integral de Salud (SIS), superando el requerimiento mínimo de 500.000 registros establecido en la evaluación.</p>
+    <p>A lo largo de este trabajo se desarrollan sistemáticamente las etapas de selección, enriquecimiento con fuentes presupuestarias regionales externas, limpieza e imputación estadística, codificación categórica y estandarización de variables. Posteriormente, se aplican técnicas de analítica descriptiva mediante estadísticos y matrices de correlación, distintos enfoques de extracción de reglas de asociación (algoritmo Apriori) y modelos predictivos de regresión (Lineal Múltiple y Regularización Ridge). El objetivo final consiste en evidenciar la ganancia de precisión al incorporar fuentes complementarias e inferir acciones estratégicas y logísticas orientadas a la optimización de los costos y la prevención de complicaciones en los pacientes.</p>
 
     <!-- 1. Selección de Datos -->
-    <h2>1. Selección de Datos</h2>
+    <h2 id="seccion1">1. Selección de Datos</h2>
     <p>Para este análisis, se partió de un archivo maestro proporcionado por el Seguro Integral de Salud (SIS) a través de la Plataforma Nacional de Datos Abiertos, el cual contenía inicialmente <strong>1,735,940 registros</strong>. Con el objetivo de optimizar el procesamiento informático asegurando el cumplimiento de la métrica mínima del proyecto (500,000 registros), se procedió a extraer una muestra probabilística representativa de <strong>650,000 registros</strong> mediante una semilla controlada para garantizar su reproducibilidad.</p>
     <p>Se seleccionaron 11 variables útiles fundamentales: atributos demográficos (EDAD, SEXO, DEPARTAMENTO), diagnósticos comórbidos (OBESIDAD, HIPERTENSIÓN, SALUD MENTAL, TIPO_DIABETES) y variables operativas-financieras (CANT_ATENCIONES, VALOR_NETO, DIAS_HOSP). Además, se conservó intencionalmente el identificador <code>CODIGO_ANONIMIZADO</code> para una correcta trazabilidad que impidiese eliminar a distintos pacientes con características idénticas.</p>
     <div class="evidence-box">
@@ -102,7 +121,7 @@
     </div>
 
     <!-- 2. Incorporación de Datos de Otras Fuentes -->
-    <h2>2. Incorporación de Datos de Otras Fuentes</h2>
+    <h2 id="seccion2">2. Incorporación de Datos de Otras Fuentes</h2>
     <p>Para enriquecer el modelo y dotarlo de un contexto territorial macroeconómico, se incorporó un dataset externo oficial del <strong>Instituto Nacional de Estadística e Informática (INEI)</strong>. El documento base fue el <em>"Estimaciones y Proyecciones de Población Departamental (Boletín Especial Nº 25)"</em>.</p>
     <p>A partir de esta integración, se cruzó la población proyectada al 2024 (25 departamentos) mediante la técnica de "Left Merge", logrando un emparejamiento del <strong>100% de éxito</strong> (0 nulos generados). Adicionalmente, se derivó una nueva métrica avanzada: la <strong>Tasa de Afiliados SIS por cada 1,000 habitantes</strong> (TASA_AFILIADOS_POR_1000_HAB), lo que permite evaluar el impacto relativo del diagnóstico frente a la densidad poblacional real de cada región.</p>
     <div class="evidence-box">
@@ -116,7 +135,7 @@
     </div>
 
     <!-- 3. Limpieza de Datos -->
-    <h2>3. Limpieza de Datos</h2>
+    <h2 id="seccion3">3. Limpieza de Datos</h2>
     <p>Durante la auditoría de calidad (Paso 0), se identificó un patrón de sistema crucial: las variables de comorbilidad (Ej. CON_DX_OBESIDAD) registraban más de 236 mil a 508 mil valores nulos. Se descubrió que el sistema de salud omite el registro cuando el paciente <strong>no padece la enfermedad</strong>; por lo tanto, la imputación por "moda" hubiese catalogado erróneamente a toda la población como enferma. La limpieza aplicó una conversión empírica de NaN a "NO".</p>
     <p>A nivel de duplicados, al emplear el <code>CODIGO_ANONIMIZADO</code>, se detectaron y purgaron <strong>79,561 registros redundantes exactos</strong> (mismo paciente en mismo estado). Por último, se aplicó un filtro biológico (eliminando 2 registros con edades &lt;0 o &gt;110 años) y se aplicó la técnica de <strong>Winsorización al Percentil 99</strong> sobre variables de gasto atípico (VALOR_NETO acotado a 1050 soles y DIAS_HOSP a 6 días) para no distorsionar la varianza. El dataset limpio finalizó en <strong>570,437 registros</strong>, cumpliendo el umbral mínimo exigido de medio millón.</p>
     <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
@@ -125,7 +144,7 @@
     </div>
 
     <!-- 4. Codificación de Datos -->
-    <h2>4. Codificación de Datos</h2>
+    <h2 id="seccion4">4. Codificación de Datos</h2>
     <p>Para el procesamiento algorítmico, las variables cualitativas fueron mapeadas al plano numérico bajo dos estrategias:</p>
     <ul>
         <li><strong>Variables Dicotómicas (Binarias):</strong> Se realizó un mapeo directo donde la presencia de la condición equivale a 1 y su ausencia a 0. Ejemplo: SEXO (Femenino=0, Masculino=1) y Diagnósticos (NO=0, SI=1).</li>
@@ -136,7 +155,7 @@
     </div>
 
     <!-- 5. Normalización de Datos -->
-    <h2>5. Normalización de Datos</h2>
+    <h2 id="seccion5">5. Normalización de Datos</h2>
     <p>Debido a la profunda disparidad en las escalas de medida de los datos (donde <code>POBLACION_DEPARTAMENTO</code> se mueve en el rango de los millones, <code>VALOR_NETO</code> en cientos, y <code>DIAS_HOSP</code> en unidades discretas), se implementó un proceso de estandarización <strong>Z-Score (StandardScaler)</strong>.</p>
     <p>Este procedimiento restó la media y dividió por la desviación estándar a cada variable cuantitativa, re-escalando los datos a una media de 0 y varianza de 1. Es un paso crítico para garantizar que los modelos de regresión evalúen las magnitudes de los coeficientes de manera justa sin que la variable de mayor tamaño opaque a las variables clínicas.</p>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
@@ -144,7 +163,7 @@
     </div>
 
     <!-- 6. Aplicación de Principales Estadísticos -->
-    <h2>6. Aplicación de Principales Estadísticos</h2>
+    <h2 id="seccion6">6. Aplicación de Principales Estadísticos</h2>
     <p>El análisis descriptivo revela que la edad media del afiliado activo diabético en el SIS es de <strong>55.93 años</strong>. Respecto a la carga del sistema, la gran mayoría de pacientes no registra días de hospitalización en este corte transversal, pero existe una altísima variabilidad (varianza de 15,551 en VALOR_NETO) generada por un segmento particular de pacientes con atenciones de alto costo.</p>
     <p>Los indicadores de asimetría (skew: 6.92) y curtosis (50.73) del <code>VALOR_NETO</code> demostraron una distribución fuertemente sesgada a la derecha. La matriz de correlación ratificó empíricamente una alta dependencia lineal positiva (+0.84) únicamente entre <code>DIAS_HOSP</code> y el <code>VALOR_NETO</code> del gasto, confirmando la lógica sanitaria.</p>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
@@ -161,7 +180,7 @@
     </div>
 
     <!-- 7. Enfoques de Reglas de Asociación -->
-    <h2>7. Enfoques de Reglas de Asociación</h2>
+    <h2 id="seccion7">7. Enfoques de Reglas de Asociación</h2>
     <p>El algoritmo <em>Apriori</em> fue parametrizado para identificar patrones de co-diagnóstico, obteniéndose resultados determinantes mediante tres enfoques:</p>
     <ul>
         <li><strong>Frecuencia Global (Soporte >3%):</strong> La principal regla descriptiva masiva señala que el perfil demográfico dominante se concentra en el antecedente "Mujer" derivando al consecuente "Diabetes Mellitus Tipo 2" (Confianza del 72.4%).</li>
@@ -173,7 +192,7 @@
     </div>
 
     <!-- 8. Aplicación de Modelo de Regresión -->
-    <h2>8. Aplicación de Modelo de Regresión</h2>
+    <h2 id="seccion8">8. Aplicación de Modelo de Regresión</h2>
     <p>Para predecir el coste de la atención (VALOR_NETO), se ejecutó un marco comparativo (Cross Validation K-Fold=5 y partición 80/20).</p>
     <p>El "Modelo Base" (exclusivamente clínico) y el "Modelo Enriquecido" (sumando población INEI) obtuvieron la misma precisión predictiva <strong>(R² de 0.739)</strong>, con un RMSE de ~63.9 soles. La regresión Ridge (L2) ratificó la estabilidad de estas predicciones.</p>
     <p>Sin embargo, al correr un "Modelo sin fuga" (removiendo las variables operativas post-atención como DIAS_HOSP), el R² colapsó a 0.01. Matemáticamente, esto significa que las enfermedades previas no predicen el gasto hospitalario. El gasto es estrictamente dictado por los recursos e insumos operativos que consume el paciente en su ingreso.</p>
@@ -189,7 +208,7 @@
     </div>
 
     <!-- 9. Acciones Inferidas en Base a los Resultados -->
-    <h2>9. Acciones Inferidas en Base a los Resultados</h2>
+    <h2 id="seccion9">9. Acciones Inferidas en Base a los Resultados</h2>
     <p>A partir del análisis holístico, se proponen las siguientes acciones o toma de decisiones:</p>
     
     <table>
@@ -219,7 +238,7 @@
     </div>
 
     <!-- 10. Conclusión y Acciones a Realizar -->
-    <h2>10. Conclusión y Acciones a Realizar</h2>
+    <h2 id="seccion10">10. Conclusión y Acciones a Realizar</h2>
     <p>El presente taller práctico de minería de datos aplicado al contexto de salud (afiliados SIS) permitió extraer información valiosa mediante la ejecución sistemática de un pipeline analítico. Al trabajar con un volumen masivo de datos (600,000 registros procesados), se concluyen los siguientes puntos clave según cada fase del proceso:</p>
     <ul>
         <li><strong>Preprocesamiento y Calidad de los Datos:</strong> Durante la fase de limpieza, se observó que variables clínicas fundamentales, tales como los diagnósticos por obesidad e hipertensión, presentaban un volumen crítico de valores nulos (superando los 200,000 registros). La estrategia de imputación estadística (mediana para numéricos y moda para categóricos) demostró ser altamente efectiva, permitiendo conservar el gran volumen de la muestra sin introducir ruido estadístico severo y dejando el dataset óptimo (0 nulos) para los algoritmos.</li>
