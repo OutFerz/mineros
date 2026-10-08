@@ -94,7 +94,12 @@
         Muestra inicial extraída: 650,000 registros<br>
         Columnas seleccionadas (11): ['CODIGO_ANONIMIZADO', 'EDAD', 'SEXO', ...]
     </div>
-    <div class="image-placeholder">[Pegar pantallazo de la Selección de Datos (Consola)]</div>
+    <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/paso_0_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <img src="capturas/paso_0_2.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <img src="capturas/paso_0_3.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <img src="capturas/seleccion_datos.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 2. Incorporación de Datos de Otras Fuentes -->
     <h2>2. Incorporación de Datos de Otras Fuentes</h2>
@@ -106,13 +111,18 @@
         - Registros después del merge: 650,000<br>
         - Coincidencia real calculada: 100.00%
     </div>
-    <div class="image-placeholder">[Pegar pantallazo de la Incorporación de Datos Externos]</div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/datos_externos.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 3. Limpieza de Datos -->
     <h2>3. Limpieza de Datos</h2>
     <p>Durante la auditoría de calidad (Paso 0), se identificó un patrón de sistema crucial: las variables de comorbilidad (Ej. CON_DX_OBESIDAD) registraban más de 236 mil a 508 mil valores nulos. Se descubrió que el sistema de salud omite el registro cuando el paciente <strong>no padece la enfermedad</strong>; por lo tanto, la imputación por "moda" hubiese catalogado erróneamente a toda la población como enferma. La limpieza aplicó una conversión empírica de NaN a "NO".</p>
     <p>A nivel de duplicados, al emplear el <code>CODIGO_ANONIMIZADO</code>, se detectaron y purgaron <strong>79,561 registros redundantes exactos</strong> (mismo paciente en mismo estado). Por último, se aplicó un filtro biológico (eliminando 2 registros con edades &lt;0 o &gt;110 años) y se aplicó la técnica de <strong>Winsorización al Percentil 99</strong> sobre variables de gasto atípico (VALOR_NETO acotado a 1050 soles y DIAS_HOSP a 6 días) para no distorsionar la varianza. El dataset limpio finalizó en <strong>570,437 registros</strong>, cumpliendo el umbral mínimo exigido de medio millón.</p>
-    <div class="image-placeholder">[Pegar pantallazo de la Limpieza de Datos y Verificación de Requisito de >500k]</div>
+    <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/limpieza_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <img src="capturas/limpieza_2.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 4. Codificación de Datos -->
     <h2>4. Codificación de Datos</h2>
@@ -121,22 +131,34 @@
         <li><strong>Variables Dicotómicas (Binarias):</strong> Se realizó un mapeo directo donde la presencia de la condición equivale a 1 y su ausencia a 0. Ejemplo: SEXO (Femenino=0, Masculino=1) y Diagnósticos (NO=0, SI=1).</li>
         <li><strong>Variables Politómicas (Nominales):</strong> Para variables categóricas sin un orden inherente (como DEPARTAMENTO y TIPO_DIABETES), se aplicó <em>One-Hot Encoding</em> (variables dummy), eliminando la primera categoría (`drop_first=True`) para evitar multicolinealidad. Esto amplió el dataset a un total de 39 columnas.</li>
     </ul>
-    <div class="image-placeholder">[Pegar pantallazo de la Codificación de Datos (Consola)]</div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/codificacion.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 5. Normalización de Datos -->
     <h2>5. Normalización de Datos</h2>
     <p>Debido a la profunda disparidad en las escalas de medida de los datos (donde <code>POBLACION_DEPARTAMENTO</code> se mueve en el rango de los millones, <code>VALOR_NETO</code> en cientos, y <code>DIAS_HOSP</code> en unidades discretas), se implementó un proceso de estandarización <strong>Z-Score (StandardScaler)</strong>.</p>
     <p>Este procedimiento restó la media y dividió por la desviación estándar a cada variable cuantitativa, re-escalando los datos a una media de 0 y varianza de 1. Es un paso crítico para garantizar que los modelos de regresión evalúen las magnitudes de los coeficientes de manera justa sin que la variable de mayor tamaño opaque a las variables clínicas.</p>
-    <div class="image-placeholder">[Pegar pantallazo de la Normalización de Datos]</div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/normalizacion.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 6. Aplicación de Principales Estadísticos -->
     <h2>6. Aplicación de Principales Estadísticos</h2>
     <p>El análisis descriptivo revela que la edad media del afiliado activo diabético en el SIS es de <strong>55.93 años</strong>. Respecto a la carga del sistema, la gran mayoría de pacientes no registra días de hospitalización en este corte transversal, pero existe una altísima variabilidad (varianza de 15,551 en VALOR_NETO) generada por un segmento particular de pacientes con atenciones de alto costo.</p>
     <p>Los indicadores de asimetría (skew: 6.92) y curtosis (50.73) del <code>VALOR_NETO</code> demostraron una distribución fuertemente sesgada a la derecha. La matriz de correlación ratificó empíricamente una alta dependencia lineal positiva (+0.84) únicamente entre <code>DIAS_HOSP</code> y el <code>VALOR_NETO</code> del gasto, confirmando la lógica sanitaria.</p>
-    <div class="image-placeholder">[Pegar pantallazo de los Estadísticos en consola]</div>
-    <div class="image-placeholder"><strong>[Pegar imagen: salidas/histogramas_distribucion.png]</strong></div>
-    <div class="image-placeholder"><strong>[Pegar imagen: salidas/boxplots_diagnosticos.png]</strong></div>
-    <div class="image-placeholder"><strong>[Pegar imagen: salidas/matriz_correlacion_heatmap.png]</strong></div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/estadisticos.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="salidas/histogramas_distribucion.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="salidas/boxplots_diagnosticos.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="salidas/matriz_correlacion_heatmap.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 7. Enfoques de Reglas de Asociación -->
     <h2>7. Enfoques de Reglas de Asociación</h2>
@@ -146,7 +168,9 @@
         <li><strong>Confianza Alta (>50%):</strong> Pacientes que presentan el antecedente combinado de Hipertensión, Obesidad, Adulto Mayor y Costo Alto reportan Atenciones Frecuentes con una confianza del 100%.</li>
         <li><strong>Comorbilidad Fuerte (Lift > 1.15):</strong> El mayor hallazgo estadístico detectó que un paciente con <code>[Obesidad, Adulto Mayor y Alto Costo]</code> desencadena una asociación estadística no aleatoria hacia <code>[Hipertensión, Mujer, Atenciones Frecuentes, DM Tipo 2]</code> con un asombroso <strong>Lift de 4.64</strong> y una confianza de 40.9%.</li>
     </ul>
-    <div class="image-placeholder">[Pegar pantallazo de los Enfoques de Reglas de Asociación]</div>
+    <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/reglas.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 8. Aplicación de Modelo de Regresión -->
     <h2>8. Aplicación de Modelo de Regresión</h2>
@@ -158,7 +182,11 @@
         1. DIAS_HOSP (Impacto: 100.06)<br>
         2. CANT_ATENCIONES (Impacto: 22.97)
     </div>
-    <div class="image-placeholder">[Pegar pantallazo de los Modelos de Regresión y Precisión]</div>
+    <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/regresion_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <img src="capturas/regresion_2.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <img src="capturas/regresion_3.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
     <!-- 9. Acciones Inferidas en Base a los Resultados -->
     <h2>9. Acciones Inferidas en Base a los Resultados</h2>
@@ -186,7 +214,10 @@
             <td><strong>Utilizar la demografía del INEI</strong> exclusivamente para planificar y mapear las necesidades de infraestructura y abastecimiento por región, no para calcular el costo por cama o paciente.</td>
         </tr>
     </table>
-    <div class="image-placeholder">[Pegar pantallazo de la Inferencia de Acciones a Realizar]</div>
+    <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
+        <img src="capturas/acciones_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <img src="capturas/acciones_2.png" style="max-width:100%; border:1px solid #ddd;">
+    </div>
 
 </div>
 
