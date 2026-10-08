@@ -1,6 +1,6 @@
 # Ignorar todos los archivos de datos
 *.csv
-*.xlsx
+
 
 # Ignorar entornos virtuales
 venv/
