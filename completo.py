@@ -97,6 +97,7 @@ def inspeccionar_dataset_original(df):
     print("- En CON_DX_OBESIDAD, CON_DX_HIPERTENSION y CON_DX_SALUDMENTAL solo existe 'SI' y NaN.")
     print("- Por lo tanto, los valores NaN representan la ausencia de diagnóstico ('NO').")
     print("- Imputar con la moda convertía todo a 'SI', distorsionando las reglas de asociación.")
+    pausa_pantallazo("Saca pantallazo de la INSPECCIÓN INICIAL (PASO 0).")
 
 
 def cargar_fuente_externa_poblacion(ruta_excel='cantidad_poblacion.xlsx'):

@@ -41,7 +41,7 @@ El objetivo de este proyecto es extraer patrones de valor e inferencias a partir
 ```text
 mineros/
 │
-├── analisis_salud.py              # Script principal con el pipeline de datos
+├── completo.py                    # Script principal con el pipeline de datos
 ├── .gitignore                     # Excluye datasets grandes (CSV) y entornos virtuales
 ├── requirements.txt               # Lista de dependencias del proyecto
 └── readme.md                      # Documentación del proyecto
@@ -81,10 +81,10 @@ cd mineros
 1. Consigue o descarga el dataset `Afiliados_activos_DM_SIS.csv`.
 2. Cópialo en la carpeta raíz del proyecto (al mismo nivel que `analisis_salud.py`):
 
-```text
 mineros/
 ├── Afiliados_activos_DM_SIS.csv   <-- Colocar aquí
-├── analisis_salud.py
+├── cantidad_poblacion.xlsx        <-- Colocar aquí (Datos INEI)
+├── completo.py
 ...
 ```
 
@@ -99,20 +99,20 @@ Es una buena práctica aislar las dependencias para evitar conflictos con otras 
 
 #### En Windows (PowerShell):
 ```powershell
-python -m venv venv
-.\venv\Scripts\Activate.ps1
+python -m venv env
+.\env\Scripts\Activate.ps1
 ```
 
 > *Si PowerShell muestra un error de políticas de ejecución de scripts, puedes habilitarlo temporalmente con:*  
 > ```powershell
 > Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
-> .\venv\Scripts\Activate.ps1
+> .\env\Scripts\Activate.ps1
 > ```
 
 #### En Windows (CMD / Símbolo del sistema):
 ```cmd
-python -m venv venv
-venv\Scripts\activate.bat
+python -m venv env
+env\Scripts\activate.bat
 ```
 
 #### En macOS / Linux:
@@ -125,7 +125,7 @@ source venv/bin/activate
 
 ### 4. Instalar dependencias
 
-Con el entorno virtual activado (`(venv)` visible en la terminal), instala los paquetes requeridos:
+Con el entorno virtual activado (`(env)` visible en la terminal), instala los paquetes requeridos:
 
 ```bash
 pip install -r requirements.txt
@@ -134,7 +134,7 @@ pip install -r requirements.txt
 > [!TIP]
 > Si aún no has generado `requirements.txt`, puedes instalar las librerías base directamente:
 > ```bash
-> pip install pandas matplotlib seaborn scikit-learn mlxtend
+> pip install pandas matplotlib seaborn scikit-learn mlxtend openpyxl
 > ```
 
 ---
@@ -144,12 +144,12 @@ pip install -r requirements.txt
 Ejecuta el script principal para procesar los datos:
 
 ```bash
-python analisis_salud.py
+python completo.py
 ```
 
 > [!NOTE]
-> **Interacción con los gráficos:**  
-> A lo largo de la ejecución se generarán ventanas emergentes con gráficos de Matplotlib y Seaborn. Debes **cerrar cada ventana gráfica** para que el script continúe automáticamente con la siguiente fase del pipeline.
+> **Interacción y Resultados Automáticos:**  
+> A lo largo de la ejecución, el script guardará todos los gráficos e informes generados (CSV, PNG) dentro de una nueva carpeta llamada `salidas/`. Además, el análisis se complementa con un documento HTML final interactivo.
 
 ---
 
