@@ -1,0 +1,11 @@
+# Ignorar todos los archivos de datos
+*.csv
+*.xlsx
+
+# Ignorar entornos virtuales
+venv/
+env/
+
+# Ignorar archivos compilados de Python
+__pycache__/
+*.pyc
