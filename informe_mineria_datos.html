@@ -218,6 +218,23 @@
         <img src="capturas/acciones_clean.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
     </div>
 
+    <!-- 10. Conclusión y Acciones a Realizar -->
+    <h2>10. Conclusión y Acciones a Realizar</h2>
+    <p>El presente taller práctico de minería de datos aplicado al contexto de salud (afiliados SIS) permitió extraer información valiosa mediante la ejecución sistemática de un pipeline analítico. Al trabajar con un volumen masivo de datos (600,000 registros procesados), se concluyen los siguientes puntos clave según cada fase del proceso:</p>
+    <ul>
+        <li><strong>Preprocesamiento y Calidad de los Datos:</strong> Durante la fase de limpieza, se observó que variables clínicas fundamentales, tales como los diagnósticos por obesidad e hipertensión, presentaban un volumen crítico de valores nulos (superando los 200,000 registros). La estrategia de imputación estadística (mediana para numéricos y moda para categóricos) demostró ser altamente efectiva, permitiendo conservar el gran volumen de la muestra sin introducir ruido estadístico severo y dejando el dataset óptimo (0 nulos) para los algoritmos.</li>
+        <li><strong>Inferencia sobre Reglas de Asociación:</strong> La aplicación del algoritmo Apriori arrojó un DataFrame vacío al buscar reglas de asociación fuertes bajo un soporte mínimo del 5%. Esto permite inferir que los padecimientos analizados (hipertensión, obesidad, problemas de salud mental) ocurren de manera muy aislada y diversificada entre los pacientes, o bien, no existe un patrón dominante de "comorbilidad" lo suficientemente masivo que abarque de forma simultánea a más del 5% de toda la población evaluada.</li>
+        <li><strong>Inferencia Predictiva (Modelo de Regresión Múltiple):</strong> El modelo de regresión lineal, configurado para predecir el impacto económico en salud (VALOR_NETO), obtuvo un Coeficiente de Determinación (R²) de 0.3671. Esto significa que las variables elegidas logran explicar cerca del 37% de la variabilidad de los costos médicos. El análisis de coeficientes es concluyente: la variable que detona el mayor costo para el sistema es, por mucho, los Días de Hospitalización (DIAS_HOSP), con un peso predictivo altísimo de 881.5, seguida por la cantidad de atenciones. Sorprendentemente, la presencia de enfermedades crónicas individuales no dispara el costo por sí sola, a menos que esta derive en una hospitalización.</li>
+    </ul>
+
+    <h3>Acciones a Realizar (Toma de Decisiones):</h3>
+    <p>En base a estos resultados técnicos, se sugieren las siguientes acciones estratégicas y directivas:</p>
+    <ul>
+        <li><strong>Focalización Presupuestaria Hospitalaria:</strong> Dado que los días de hospitalización son el vector principal del gasto, el Estado o entidad de salud debe enfocar su presupuesto en mejorar la atención ambulatoria temprana. Prevenir que un paciente crónico llegue a hospitalización reducirá drásticamente el impacto económico (VALOR_NETO).</li>
+        <li><strong>Mejora en la captura de información:</strong> Se debe auditar el proceso de registro médico en los departamentos de origen, debido al gran vacío de datos encontrados en la etapa de limpieza para los diagnósticos.</li>
+        <li><strong>Modelos Predictivos Avanzados:</strong> Para un trabajo a futuro y lograr un R² superior al 37%, se recomienda incorporar variables sociodemográficas más granulares (por ejemplo, encuestas de hábitos alimenticios) o utilizar algoritmos no lineales (como Random Forest o Gradient Boosting) que puedan capturar mejor la complejidad biológica y financiera de la salud pública.</li>
+    </ul>
+
 </div>
 
 </body>
