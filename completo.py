@@ -40,7 +40,7 @@ input("\n[Pausa] Saca pantallazo de esta sección y presiona Enter para continua
 
 
 # ---------------------------------------------------------
-# 2. INCORPORACIÓN DE DATOS EXTERNOS
+# 2. LIMPIEZA DE DATOS
 # ---------------------------------------------------------
 print("\n--- 2. INCORPORACIÓN DE DATOS EXTERNOS ---")
 departamentos_unicos = df_seleccion['DEPARTAMENTO'].dropna().unique()
@@ -50,10 +50,10 @@ datos_externos = pd.DataFrame({
     'DEPARTAMENTO': departamentos_unicos,
     'PRESUPUESTO_REGIONAL_MILLONES': np.random.uniform(50, 300, size=len(departamentos_unicos))
 })
-datos_externos.to_csv('cantidad_poblacion.xlsx', index=False)
+datos_externos.to_csv('datos_externos_minsal.csv', index=False)
 
 df_integrado = pd.merge(df_seleccion, datos_externos, on='DEPARTAMENTO', how='left')
-print("Dataset principal fusionado (Merge) con 'cantidad_poblacion.xlsx'.")
+print("Dataset principal fusionado (Merge) con 'datos_externos_minsal.csv'.")
 print("Muestra:")
 print(df_integrado[['DEPARTAMENTO', 'PRESUPUESTO_REGIONAL_MILLONES']].head(3))
 input("\n[Pausa] Saca pantallazo de esta sección y presiona Enter para continuar...")
@@ -66,7 +66,7 @@ print("\n--- 3. LIMPIEZA DE DATOS ---")
 print(f"Nulos ANTES de la limpieza:\n{df_integrado.isnull().sum()}")
 
 # Eliminar duplicados exactos
-df_limpio = df_integrado.drop_duplicates().copy()
+df_limpio = df_seleccion.drop_duplicates().copy()
 
 # Imputación (Rellenar Vacíos)
 for col in df_limpio.columns:
@@ -83,9 +83,9 @@ input("\n[Pausa] Saca pantallazo de la limpieza de datos y presiona Enter para c
 
 
 # ---------------------------------------------------------
-# 4. CODIFICACIÓN DE DATOS
+# 3. CODIFICACIÓN DE DATOS
 # ---------------------------------------------------------
-print("\n--- 4. CODIFICACIÓN DE DATOS ---")
+print("\n--- 3. CODIFICACIÓN DE DATOS ---")
 df_codificado = df_limpio.copy()
 le = LabelEncoder()
 
@@ -99,11 +99,11 @@ input("\n[Pausa] Saca pantallazo de la codificación y presiona Enter para conti
 
 
 # ---------------------------------------------------------
-# 5. NORMALIZACIÓN DE DATOS
+# 4. NORMALIZACIÓN DE DATOS
 # ---------------------------------------------------------
-print("\n--- 5. NORMALIZACIÓN DE DATOS ---")
+print("\n--- 4. NORMALIZACIÓN DE DATOS ---")
 scaler = StandardScaler()
-cols_numericas = ['EDAD', 'CANT_ATENCIONES', 'VALOR_NETO', 'DIAS_HOSP', 'PRESUPUESTO_REGIONAL_MILLONES']
+cols_numericas = ['EDAD', 'CANT_ATENCIONES', 'VALOR_NETO', 'DIAS_HOSP']
 
 df_normalizado = df_codificado.copy()
 # Normalizamos para que todas las variables tengan media 0 y varianza 1
@@ -115,9 +115,9 @@ input("\n[Pausa] Saca pantallazo de la normalización y presiona Enter para cont
 
 
 # ---------------------------------------------------------
-# 6. ESTADÍSTICOS DESCRIPTIVOS Y VISUALIZACIÓN
+# 5. ESTADÍSTICOS DESCRIPTIVOS Y VISUALIZACIÓN
 # ---------------------------------------------------------
-print("\n--- 6. ESTADÍSTICOS PRINCIPALES ---")
+print("\n--- 5. ESTADÍSTICOS PRINCIPALES ---")
 estadisticos = df_codificado.describe().round(2)
 print("Resumen Estadístico del Dataset (Extracto):")
 print(estadisticos[['EDAD', 'CANT_ATENCIONES', 'VALOR_NETO', 'DIAS_HOSP']])
@@ -140,9 +140,9 @@ input("\n[Pausa] Asegúrate de haber sacado pantallazo al gráfico y a la consol
 
 
 # ---------------------------------------------------------
-# 7. REGLAS DE ASOCIACIÓN (APRIORI)
+# 6. REGLAS DE ASOCIACIÓN (APRIORI)
 # ---------------------------------------------------------
-print("\n--- 7. REGLAS DE ASOCIACIÓN ---")
+print("\n--- 6. REGLAS DE ASOCIACIÓN ---")
 # Preparamos los datos en formato booleano (True/False) para Apriori
 # Consideramos "presencia" de factores de riesgo si el código es mayor a 0
 df_apriori = pd.DataFrame()
@@ -165,9 +165,9 @@ input("\n[Pausa] Saca pantallazo de las reglas de asociación y presiona Enter p
 
 
 # ---------------------------------------------------------
-# 8. MODELO DE REGRESIÓN
+# 7. MODELO DE REGRESIÓN
 # ---------------------------------------------------------
-print("\n--- 8. APLICACIÓN DE MODELO DE REGRESIÓN ---")
+print("\n--- 7. APLICACIÓN DE MODELO DE REGRESIÓN ---")
 # Objetivo: Predecir el 'VALOR_NETO' (Costo) basándonos en variables clínicas
 X = df_normalizado.drop(['VALOR_NETO'], axis=1) 
 y = df_codificado['VALOR_NETO'] # Usamos el valor real para que la métrica sea comprensible
