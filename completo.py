@@ -70,10 +70,13 @@ df_limpio = df_integrado.drop_duplicates().copy()
 
 # Imputación (Rellenar Vacíos)
 for col in df_limpio.columns:
-    if df_limpio[col].dtype == 'object':
-        df_limpio[col] = df_limpio[col].fillna(df_limpio[col].mode()[0])
-    else:
+    if pd.api.types.is_numeric_dtype(df_limpio[col]):
         df_limpio[col] = df_limpio[col].fillna(df_limpio[col].median())
+    else:
+        if not df_limpio[col].mode().empty:
+            df_limpio[col] = df_limpio[col].fillna(df_limpio[col].mode()[0])
+        else:
+            df_limpio[col] = df_limpio[col].fillna("DESCONOCIDO")
 
 print(f"\nNulos DESPUÉS de la limpieza (Imputación por Moda/Mediana):\n{df_limpio.isnull().sum().head(5)} ... (Todos en 0)")
 input("\n[Pausa] Saca pantallazo de la limpieza de datos y presiona Enter para continuar...")
