@@ -14,8 +14,4 @@ try:
 except FileNotFoundError:
     print(f"Error: No se encontró el archivo {archivo_csv} en la carpeta raíz.")
 
-# Aquí puedes continuar con el resto de los pasos...
-# Para mostrar un gráfico y sacarle el pantallazo, usarás plt.show():
-# plt.figure(figsize=(10,6))
-# sns.histplot(df['alguna_columna'])
-# plt.show()  <-- Esto abrirá una ventana en tu PC con el gráfico
+print(df.info())
