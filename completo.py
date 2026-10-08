@@ -123,9 +123,17 @@ print("Resumen Estadístico del Dataset (Extracto):")
 print(estadisticos[['EDAD', 'CANT_ATENCIONES', 'VALOR_NETO', 'DIAS_HOSP']])
 
 print("\n>>> Se abrirá una ventana con el Mapa de Calor de Correlaciones. Ciérrala para continuar el código.")
-plt.figure(figsize=(10, 8))
-sns.heatmap(df_codificado.corr(), annot=False, cmap='coolwarm', fmt=".2f")
-plt.title('Matriz de Correlación - Variables SIS Diabetes')
+plt.figure(figsize=(12, 10))
+corr = df_codificado.corr()
+
+# Crear una máscara para ocultar la mitad superior (espejo)
+mask = np.triu(np.ones_like(corr, dtype=bool))
+
+# Dibujar el heatmap mejorado
+sns.heatmap(corr, mask=mask, annot=True, cmap='RdYlBu_r', fmt=".2f", 
+            linewidths=0.5, annot_kws={"size": 9})
+plt.title('Matriz de Correlación - Variables SIS Diabetes', fontsize=16, pad=20)
+plt.xticks(rotation=45, ha='right')
 plt.tight_layout()
 plt.show() # Esta línea pausa el script hasta que cierres la ventana del gráfico
 input("\n[Pausa] Asegúrate de haber sacado pantallazo al gráfico y a la consola, luego presiona Enter...")
