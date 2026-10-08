@@ -7,7 +7,7 @@ Este proyecto es un taller de análisis de datos enfocado en un dataset de salud
 El repositorio está organizado de la siguiente manera:
 
 ```text
-📁 Taller_Salud/
+📁 Mineria/
 │
 ├── analisis_salud.py              # Script principal con el pipeline de datos
 ├── .gitignore                     # Archivo que evita la subida de los datasets (CSV)
