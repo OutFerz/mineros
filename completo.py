@@ -50,10 +50,10 @@ datos_externos = pd.DataFrame({
     'DEPARTAMENTO': departamentos_unicos,
     'PRESUPUESTO_REGIONAL_MILLONES': np.random.uniform(50, 300, size=len(departamentos_unicos))
 })
-datos_externos.to_csv('datos_externos_minsal.csv', index=False)
+datos_externos.to_csv('cantidad_poblacion.xlsx', index=False)
 
 df_integrado = pd.merge(df_seleccion, datos_externos, on='DEPARTAMENTO', how='left')
-print("Dataset principal fusionado (Merge) con 'datos_externos_minsal.csv'.")
+print("Dataset principal fusionado (Merge) con 'cantidad_poblacion.xlsx'.")
 print("Muestra:")
 print(df_integrado[['DEPARTAMENTO', 'PRESUPUESTO_REGIONAL_MILLONES']].head(3))
 input("\n[Pausa] Saca pantallazo de esta sección y presiona Enter para continuar...")
