@@ -9,7 +9,7 @@ import os
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression, Ridge
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from mlxtend.frequent_patterns import apriori, association_rules
 
 # Ignorar advertencias menores para mantener la consola limpia en los pantallazos
@@ -303,33 +303,39 @@ def main():
     pred_base = modelo_base.predict(X_b_test)
     r2_base = r2_score(y_test, pred_base)
     mse_base = mean_squared_error(y_test, pred_base)
+    rmse_base = np.sqrt(mse_base)
+    mae_base = mean_absolute_error(y_test, pred_base)
 
     # 2. MODELO CON FUENTE EXTERNA (Con Población INEI)
     modelo_ext = LinearRegression().fit(X_e_train, y_train)
     pred_ext = modelo_ext.predict(X_e_test)
     r2_ext = r2_score(y_test, pred_ext)
     mse_ext = mean_squared_error(y_test, pred_ext)
+    rmse_ext = np.sqrt(mse_ext)
+    mae_ext = mean_absolute_error(y_test, pred_ext)
 
     # 3. MODELO RIDGE (Regularización L2 con fuente externa)
-    modelo_ridge = Ridge(alpha=100.0).fit(X_e_train, y_train)
+    modelo_ridge = Ridge(alpha=100.0, random_state=42).fit(X_e_train, y_train)
     pred_ridge = modelo_ridge.predict(X_e_test)
     r2_ridge = r2_score(y_test, pred_ridge)
     mse_ridge = mean_squared_error(y_test, pred_ridge)
+    rmse_ridge = np.sqrt(mse_ridge)
+    mae_ridge = mean_absolute_error(y_test, pred_ridge)
 
     # Cálculo explícito de diferencias
     dif_r2 = r2_ext - r2_base
     dif_mse = mse_ext - mse_base
     pct_dif_mse = (dif_mse / mse_base) * 100
 
-    print("=" * 78)
+    print("=" * 88)
     print("       EVALUACIÓN COMPARATIVA: IMPACTO DE LA FUENTE EXTERNA")
-    print("=" * 78)
-    print(f"{'Modelo':<34} | {'R² (Precisión)':<18} | {'MSE (Error)':<20}")
-    print("-" * 78)
-    print(f"{'1. Modelo Base (Sin Ext.)':<34} | {r2_base:<18.6f} | {mse_base:<20.2f}")
-    print(f"{'2. Modelo + Población INEI':<34} | {r2_ext:<18.6f} | {mse_ext:<20.2f}")
-    print(f"{'3. Modelo Ridge (Regularizado)':<34} | {r2_ridge:<18.6f} | {mse_ridge:<20.2f}")
-    print("-" * 78)
+    print("=" * 88)
+    print(f"{'Modelo':<34} | {'R²':<12} | {'MSE':<14} | {'RMSE':<10} | {'MAE':<10}")
+    print("-" * 88)
+    print(f"{'1. Modelo Base (Sin Ext.)':<34} | {r2_base:<12.6f} | {mse_base:<14.2f} | {rmse_base:<10.2f} | {mae_base:<10.2f}")
+    print(f"{'2. Modelo + Población INEI':<34} | {r2_ext:<12.6f} | {mse_ext:<14.2f} | {rmse_ext:<10.2f} | {mae_ext:<10.2f}")
+    print(f"{'3. Modelo Ridge (Regularizado)':<34} | {r2_ridge:<12.6f} | {mse_ridge:<14.2f} | {rmse_ridge:<10.2f} | {mae_ridge:<10.2f}")
+    print("-" * 88)
 
     print("\nCálculo explícito de variación producida por la fuente externa:")
     print(f"- Diferencia R²  (Modelo Ext - Base): {dif_r2:+.6f}")
