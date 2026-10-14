@@ -174,10 +174,16 @@
         <figure><img src="capturas/estadisticos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: resumen de conteo, tendencia central, dispersión y forma de las distribuciones del conjunto procesado."><figcaption>Paso 6: resumen de conteo, tendencia central, dispersión y forma de las distribuciones del conjunto procesado.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <figure><img src="salidas/histogramas_distribucion.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica."><figcaption>Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica.</figcaption></figure>
+        <!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_estadisticos.png" alt="Captura de consola: Estadísticos descriptivos" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Estadísticos descriptivos.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
+<figure><img src="salidas/histogramas_distribucion.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica."><figcaption>Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <figure><img src="salidas/boxplots_diagnosticos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central."><figcaption>Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central.</figcaption></figure>
+        <!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_costo_edad.png" alt="Captura de consola: Resumen de costo y edad" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Resumen de costo y edad.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
+<figure><img src="salidas/boxplots_diagnosticos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central."><figcaption>Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
         <figure><img src="salidas/matriz_correlacion_heatmap.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: correlaciones lineales entre variables numéricas; el color y los coeficientes indican dirección y magnitud, sin demostrar causalidad."><figcaption>Paso 6: correlaciones lineales entre variables numéricas; el color y los coeficientes indican dirección y magnitud, sin demostrar causalidad.</figcaption></figure>
@@ -198,9 +204,18 @@
 
 <!-- INICIO ADICION ASOCIACION -->
 <h3>7.1. Resultados gráficos de asociación y sucesión ordenada</h3>
+<!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_reglas.png" alt="Captura de consola: Reglas ordenadas por lift" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Reglas ordenadas por lift.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
 <figure><img src="salidas/asociacion_top_lift.png" alt="Ranking de reglas según lift; R1 a R10 corresponden al CSV de reglas." style="max-width:100%;height:auto;"><figcaption>Ranking de reglas según lift; R1 a R10 corresponden al CSV de reglas.</figcaption></figure>
+<!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_soporte_confianza.png" alt="Captura de consola: Soporte, confianza y lift" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Soporte, confianza y lift.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
 <figure><img src="salidas/asociacion_soporte_confianza.png" alt="Relación entre soporte y confianza; el color representa el lift." style="max-width:100%;height:auto;"><figcaption>Relación entre soporte y confianza; el color representa el lift.</figcaption></figure>
 <figure><img src="salidas/sucesion_reglas_metricas.png" alt="Sucesión de métricas en el orden de las reglas, sin significado temporal." style="max-width:100%;height:auto;"><figcaption>Sucesión de métricas en el orden de las reglas, sin significado temporal.</figcaption></figure>
+<!-- INICIO MEJOR REGLA -->
+<figure><img src="capturas/terminal_mejor.png" alt="Captura independiente de la regla con mayor lift" style="max-width:100%;height:auto;"><figcaption>Regla con mayor lift: antecedentes, consecuentes, soporte 3,883%, confianza 40,865% y lift 4,641649.</figcaption></figure>
+<!-- FIN MEJOR REGLA -->
 <p>La primera regla presenta soporte de <strong>3.88%</strong>, confianza de <strong>40.87%</strong> y lift de <strong>4.642</strong>. El soporte mide la proporción de registros que cumplen conjuntamente antecedente y consecuente; la confianza mide la proporción con el consecuente entre quienes cumplen el antecedente. El lift compara esa confianza con la frecuencia general del consecuente. Un lift alto no implica causalidad ni garantiza que la mayoría de los pacientes presente el patrón. Las reglas inversas pueden compartir soporte y lift, pero tener distinta confianza.</p>
 <p>La sucesión representa un ranking descriptivo. No se analizó una secuencia de eventos clínicos: para estudiar progresión temporal se requieren fechas y eventos ordenados por paciente. Estos gráficos muestran únicamente las diez reglas exportadas, no todas las reglas descubiertas.</p>
 <!-- FIN ADICION ASOCIACION -->
@@ -227,6 +242,9 @@
 <figure><img src="capturas/terminal_modelos.png" alt="Captura de consola: Comparación de modelos" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Comparación de modelos.</figcaption></figure>
 <!-- FIN CAPTURA INDIVIDUAL -->
 <figure><img src="salidas/regresion_comparativa_metricas.png" alt="Comparación de R², RMSE y MAE de los cinco modelos sobre la partición de prueba." style="max-width:100%;height:auto;"><figcaption>Comparación de R², RMSE y MAE de los cinco modelos sobre la partición de prueba.</figcaption></figure>
+<!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_validacion.png" alt="Captura de consola: Validación cruzada" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Validación cruzada.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
 <figure><img src="salidas/regresion_validacion_cruzada.png" alt="Media y desviación estándar de R² en validación cruzada de cinco pliegues; no son intervalos de confianza." style="max-width:100%;height:auto;"><figcaption>Media y desviación estándar de R² en validación cruzada de cinco pliegues; no son intervalos de confianza.</figcaption></figure>
 <p>El modelo enriquecido alcanza R² = <strong>0.7393</strong>, RMSE = <strong>63.96 soles</strong> y MAE = <strong>23.86 soles</strong>. El R² resume la fracción de variabilidad explicada en prueba; el MAE representa el error absoluto medio, mientras que el RMSE penaliza más los errores grandes. La distancia entre RMSE y MAE es compatible con errores de mayor magnitud en una parte de los casos.</p>
 <p>Al excluir días de hospitalización y cantidad de atenciones, el R² baja a <strong>0.0178</strong> y el RMSE sube a <strong>124.14 soles</strong>. Esta configuración explica poco del gasto con los predictores disponibles antes de la atención; no demuestra que las comorbilidades carezcan de efecto clínico. Base, enriquecido y Ridge presentan resultados prácticamente iguales. La información INEI no aporta una mejora medible en esta comparación individual.</p>
