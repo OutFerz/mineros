@@ -1,107 +1,47 @@
-"""Inserta resultados de CSV con aspecto de terminal sobre sus gráficos en el HTML."""
+"""Incorpora la nueva captura de resumen CSV facilitada por el usuario.
+
+La imagen es evidencia estática: este comando no toma capturas de pantalla.
+Para imprimir datos actuales: python resumen_terminal.py
+"""
 from pathlib import Path
 from html import escape
 import re
-import pandas as pd
 
 BASE = Path(__file__).resolve().parent
-
-
-def generar_bloques_anteriores():
-    modelos = pd.read_csv(BASE / 'salidas/comparativa_modelos_regresion.csv')
-    reglas = pd.read_csv(BASE / 'salidas/reglas_asociacion_top_lift.csv')
-    estadisticos = pd.read_csv(BASE / 'salidas/estadisticos_descriptivos.csv', index_col=0)
-    metricas = []
-    cv = []
-    for _, fila in modelos.iterrows():
-        metricas.append(f'{fila.iloc[0]}\n' + '-' * 45 +
-                        f'\nR² Test : {fila.iloc[1]:.6f}\nRMSE    : {fila.iloc[2]:.6f} soles'
-                        f'\nMAE     : {fila.iloc[3]:.6f} soles')
-        cv.append(f'{fila.iloc[0]}\nR² CV   : {fila.iloc[4]}\nRMSE CV : {fila.iloc[5]}\nMAE CV  : {fila.iloc[6]}')
-    ranking = []
-    for i, fila in reglas.head(10).iterrows():
-        ranking.append(f'R{i+1}: {fila["antecedents"]}\n -> {fila["consequents"]}\n'
-                       f'Soporte: {fila["support"]:.2%} | Confianza: {fila["confidence"]:.2%} | Lift: {fila["lift"]:.6f}')
-    descriptivos = estadisticos[['EDAD', 'CANT_ATENCIONES', 'VALOR_NETO', 'DIAS_HOSP']].to_string()
-    bloques = {
-        'histogramas_distribucion.png': ('Estadísticos descriptivos', descriptivos, 'estadisticos_descriptivos.csv'),
-        'boxplots_diagnosticos.png': ('Resumen de costo y edad', estadisticos[['EDAD', 'VALOR_NETO']].loc[['min', '25%', '50%', '75%', 'max']].to_string(), 'estadisticos_descriptivos.csv'),
-        'asociacion_top_lift.png': ('Reglas ordenadas por lift', '\n\n'.join(ranking), 'reglas_asociacion_top_lift.csv'),
-        'asociacion_soporte_confianza.png': ('Soporte, confianza y lift', reglas[['support', 'confidence', 'lift']].head(10).rename_axis('Índice CSV (R1 = 0)').to_string(float_format=lambda x: f'{x:.6f}'), 'reglas_asociacion_top_lift.csv'),
-        'sucesion_reglas_metricas.png': ('Sucesión ordenada de reglas', 'Orden: R1 a R10 según el CSV; no representa tiempo.\n\n' + reglas[['lift', 'confidence', 'support']].head(10).to_string(index=False), 'reglas_asociacion_top_lift.csv'),
-        'regresion_comparativa_metricas.png': ('Resultados de los cinco modelos', '\n\n'.join(metricas), 'comparativa_modelos_regresion.csv'),
-        'regresion_validacion_cruzada.png': ('Validación cruzada de cinco pliegues', '\n\n'.join(cv), 'comparativa_modelos_regresion.csv'),
-        'regresion_predicciones_residuos.png': ('Evaluación del modelo enriquecido', metricas[1] + '\n\nEl gráfico muestra hasta 5.000 casos de prueba.\nLos CSV agregados no contienen las predicciones ni residuos individuales.', 'comparativa_modelos_regresion.csv'),
-        'regresion_coeficientes.png': ('Contexto de los coeficientes', 'Modelo: Enriquecido (+ población INEI y tasa).\nCoeficientes por desviación estándar del predictor (soles).\nLos valores individuales de las barras no se exportan al CSV de métricas.\nConsultar las etiquetas del gráfico y la salida del paso 8.', 'comparativa_modelos_regresion.csv (identificación del modelo)'),
-    }
-    ruta = BASE / 'informe_mineria_datos.html'
-    html = ruta.read_text(encoding='utf-8')
-    html = re.sub(r'<!-- INICIO TERMINAL CSV -->.*?<!-- FIN TERMINAL CSV -->\n?', '', html, flags=re.S)
-    def insertar(match):
-        figura = match.group(0)
-        nombre = Path(re.search(r'src="([^"]+)"', figura).group(1)).name
-        if nombre not in bloques:
-            return figura
-        titulo, texto, fuente = bloques[nombre]
-        texto = '\n'.join(linea.rstrip() for linea in texto.splitlines())
-        return ('<!-- INICIO TERMINAL CSV -->\n'
-                f'<aside class="terminal-resultados"><h4>Terminal — {escape(titulo)}</h4>'
-                f'<p>Resumen generado desde salidas/{escape(fuente)}; no es una terminal interactiva.</p>'
-                f'<pre>{escape(texto)}</pre></aside>\n<!-- FIN TERMINAL CSV -->\n' + figura)
-    html, cantidad = re.subn(r'<figure>\s*<img\b[^>]+>.*?</figure>', insertar, html, flags=re.S)
-    if '/* TERMINALES CSV */' not in html:
-        html = html.replace('</style>', '''/* TERMINALES CSV */
-        .terminal-resultados { background:#131c2b; color:#dce5f2; padding:20px; border-radius:10px; margin:20px 0 8px; }
-        .terminal-resultados h4 { color:#85dfaa; margin:0 0 12px; }
-        .terminal-resultados p { font-size:.8em; color:#bdcbdc; text-align:left; }
-        .terminal-resultados pre { white-space:pre-wrap; overflow-wrap:anywhere; font:13px/1.6 Consolas,monospace; }
-    </style>''', 1)
-    assert html.count('<!-- INICIO TERMINAL CSV -->') == len(bloques)
-    ruta.write_text(html, encoding='utf-8')
-    print(f'Actualizados {len(bloques)} bloques de resultados; gráficos y modelos sin modificar.')
 
 
 def main():
     ruta = BASE / 'informe_mineria_datos.html'
     html = ruta.read_text(encoding='utf-8')
-    html = re.sub(r'<!-- INICIO TERMINAL CSV -->.*?<!-- FIN TERMINAL CSV -->\n?', '', html, flags=re.S)
-    html = re.sub(r'<!-- INICIO CAPTURA TERMINAL -->.*?<!-- FIN CAPTURA TERMINAL -->\n?', '', html, flags=re.S)
-    html = re.sub(r'/\* TERMINALES CSV \*/.*?(?=</style>)', '', html, flags=re.S)
-    capturas = {
-        'histogramas_distribucion.png': 'estadisticos.png',
-        'boxplots_diagnosticos.png': 'estadisticos.png',
-        'asociacion_top_lift.png': 'reglas.png',
-        'asociacion_soporte_confianza.png': 'reglas.png',
-        'sucesion_reglas_metricas.png': 'reglas.png',
-        'regresion_comparativa_metricas.png': 'regresion_1.png',
-        'regresion_validacion_cruzada.png': 'regresion_1.png',
-        'regresion_predicciones_residuos.png': 'regresion_1.png',
-        'regresion_coeficientes.png': 'regresion_3.png',
-    }
-    textos = {
-        'estadisticos.png': 'Captura de consola del paso 6: estadísticos del conjunto procesado.',
-        'reglas.png': 'Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe.',
-        'regresion_1.png': 'Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales.',
-        'regresion_3.png': 'Captura de consola del paso 8: cinco coeficientes principales; el gráfico inferior amplía a diez.',
+    for marcador in ['TERMINAL CSV', 'CAPTURA TERMINAL', 'RESUMEN CSV NUEVO']:
+        html = re.sub(f'<!-- INICIO {marcador} -->.*?<!-- FIN {marcador} -->\\n?', '', html, flags=re.S)
+    # Se conserva el PNG original; el HTML muestra cada sección en su lugar.
+    zonas = {
+        'histogramas_distribucion.png': (0, 242, 'Paso 6: resumen de estadísticos leído desde los CSV.'),
+        'asociacion_top_lift.png': (1120, 320, 'Paso 7: diez reglas y sus métricas leídas desde el CSV. Entre reglas empatadas en lift, la captura puede presentar un orden distinto al CSV o al gráfico actual; R3/R4 y R7/R8 intercambian posición. Comparar también antecedentes y consecuentes.'),
+        'regresion_comparativa_metricas.png': (246, 866, 'Paso 8: resultados y validación de los cinco modelos desde el CSV.'),
     }
     def insertar(match):
         figura = match.group(0)
-        nombre = Path(re.search(r'src="([^"]+)"', figura).group(1)).name
-        if nombre not in capturas:
+        src = re.search(r'<img[^>]+src="([^"]+)"', figura)
+        nombre = Path(src.group(1)).name if src else ''
+        if nombre not in zonas:
             return figura
-        captura = capturas[nombre]
-        assert (BASE / 'capturas' / captura).is_file()
-        descripcion = escape(textos[captura], quote=True)
-        return ('<!-- INICIO CAPTURA TERMINAL -->\n'
-                f'<figure><img src="capturas/{captura}" alt="{descripcion}" style="max-width:100%;height:auto;">'
-                f'<figcaption>{descripcion}</figcaption></figure>\n'
-                '<!-- FIN CAPTURA TERMINAL -->\n' + figura)
-    html = re.sub(r'<figure>\s*<img\b[^>]+>.*?</figure>', insertar, html, flags=re.S)
-    assert html.count('<!-- INICIO CAPTURA TERMINAL -->') == 9
-    assert 'terminal-resultados' not in html
+        y, alto, texto = zonas[nombre]
+        descripcion = escape(texto, quote=True)
+        captura = ('<!-- INICIO RESUMEN CSV NUEVO -->\n<figure>'
+                   f'<div style="position:relative;aspect-ratio:891/{alto};overflow:hidden;background:#1e1e1e;">'
+                   '<img src="capturas/resumen_csv_terminal.png" '
+                   f'alt="{descripcion}" style="position:absolute;top:0;left:0;width:100%;max-width:100%;height:auto;transform:translateY(-{y/1600*100:.4f}%);">'
+                   f'</div><figcaption>{descripcion} Captura aportada por el equipo; clic para ver la imagen completa. '
+                   'Es evidencia estática y no se regenera al ejecutar el script.</figcaption></figure>\n'
+                   '<!-- FIN RESUMEN CSV NUEVO -->\n')
+        return captura + figura
+    html = re.sub(r'<figure>.*?</figure>', insertar, html, flags=re.S)
+    assert html.count('<!-- INICIO RESUMEN CSV NUEVO -->') == 3
     assert all((BASE / src).is_file() for src in re.findall(r'<img[^>]+src="([^"]+)"', html))
     ruta.write_text(html, encoding='utf-8')
-    print('Listo: nueve capturas reales existentes sobre los gráficos, sin bloques verdes.')
+    print('Incorporada la captura nueva: estadísticos, reglas y modelos en sus secciones. Quitadas las nueve repeticiones anteriores.')
 
 
 if __name__ == '__main__':
