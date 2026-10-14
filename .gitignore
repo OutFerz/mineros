@@ -4,6 +4,8 @@
 !salidas/reglas_asociacion_top_lift.csv
 !salidas/estadisticos_descriptivos.csv
 !salidas/resumen_inferencia_acciones.csv
+!salidas/coeficientes_regresion.csv
+!salidas/diagnostico_residuos.csv
 
 
 # Ignorar entornos virtuales

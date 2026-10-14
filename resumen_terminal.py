@@ -17,11 +17,36 @@ def titulo(texto):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--seccion', choices=['estadisticos', 'modelos', 'reglas', 'mejor', 'todas'], default='todas')
+    parser.add_argument('--seccion', choices=['estadisticos', 'costo_edad', 'modelos', 'reglas', 'soporte_confianza', 'sucesion', 'validacion', 'residuos', 'coeficientes', 'mejor', 'todas'], default='todas')
     args = parser.parse_args()
     modelos = pd.read_csv(BASE / 'salidas/comparativa_modelos_regresion.csv')
     reglas = pd.read_csv(BASE / 'salidas/reglas_asociacion_top_lift.csv')
     estad = pd.read_csv(BASE / 'salidas/estadisticos_descriptivos.csv', index_col=0)
+    if args.seccion in ['costo_edad', 'todas']:
+        titulo('RESUMEN DE COSTO Y EDAD')
+        print(estad[['EDAD', 'VALOR_NETO']].loc[['min', '25%', '50%', '75%', 'max']].to_string())
+    if args.seccion in ['soporte_confianza', 'sucesion', 'todas']:
+        titulo('SOPORTE, CONFIANZA Y LIFT' if args.seccion != 'sucesion' else 'SUCESION ORDENADA DE REGLAS (NO TEMPORAL)')
+        for i, r in reglas.head(10).reset_index(drop=True).iterrows():
+            print(f'R{i+1:<3} Soporte={r["support"]:.2%} Confianza={r["confidence"]:.2%} Lift={r["lift"]:.6f}')
+    if args.seccion in ['validacion', 'todas']:
+        titulo('VALIDACION CRUZADA DE CINCO PLIEGUES')
+        for _, r in modelos.iterrows():
+            print(f'\n{r.iloc[0]}\nR2: {r.iloc[4]}\nRMSE: {r.iloc[5]}\nMAE: {r.iloc[6]}')
+    for seccion, archivo in [('residuos', 'diagnostico_residuos.csv'), ('coeficientes', 'coeficientes_regresion.csv')]:
+        if args.seccion in [seccion, 'todas']:
+            titulo(seccion.upper())
+            ruta = BASE / 'salidas' / archivo
+            if not ruta.exists():
+                print(f'FALTA {archivo}: ejecutar completo.py actualizado para exportarlo.')
+            else:
+                datos = pd.read_csv(ruta)
+                if seccion == 'coeficientes':
+                    datos = datos.loc[datos['Impacto'].abs().nlargest(10).index].sort_values('Impacto', ascending=False)
+                    print(datos.to_string(index=False))
+                    print('Coeficientes por desviacion estandar del predictor; no son efectos causales.')
+                else:
+                    print(datos.T.to_string(header=False))
     if args.seccion in ['estadisticos', 'todas']:
         titulo('01 | ESTADISTICOS DESCRIPTIVOS')
         for nombre, columna, fila in [

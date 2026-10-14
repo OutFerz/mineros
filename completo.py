@@ -592,6 +592,18 @@ def etapa8_modelos_regresion(df_modelo):
     coefs_df = pd.DataFrame({'Variable': X_ext.columns, 'Impacto': reg_ext.coef_}).sort_values(by='Impacto', ascending=False)
     print("\nTop 5 variables con mayor impacto en el costo neto:")
     print(coefs_df.head(5).to_string(index=False))
+    # Evidencias numéricas de los diagnósticos, sin cambiar el ajuste del modelo.
+    coefs_df.to_csv('salidas/coeficientes_regresion.csv', index=False)
+    residuos = np.asarray(y_te) - pred_ext
+    pd.DataFrame([{
+        'Casos_prueba': len(y_te),
+        'Residuo_medio': residuos.mean(),
+        'Residuo_std': residuos.std(),
+        'Residuo_min': residuos.min(),
+        'Residuo_max': residuos.max(),
+        'Predicciones_negativas': int((pred_ext < 0).sum()),
+        'R2': r2_e, 'RMSE': np.sqrt(mse_e), 'MAE': mae_e,
+    }]).to_csv('salidas/diagnostico_residuos.csv', index=False)
     # Evidencia adicional calculada sobre predicciones reales del conjunto de prueba.
     graficar_regresion(tabla_modelos, y_te, pred_ext, coefs_df)
 
