@@ -76,6 +76,10 @@
             background-color: #f2f2f2;
             color: #333;
         }
+        figure { margin: 18px 0; width: 100%; }
+        figcaption { font-size: .92em; color: #46576a; text-align: left; margin-top: 8px; }
+        .image-placeholder { flex-direction: column; }
+        .image-placeholder img, figure img { cursor: zoom-in; }
     </style>
 </head>
 <body>
@@ -100,8 +104,8 @@
     </div>
 
     <h2 id="introduccion">Introducción</h2>
-    <p>En el ámbito de la salud pública, la toma de decisiones fundamentada en datos resulta crítica para optimizar recursos clínicos y financieros. El presente informe aborda el desarrollo de un pipeline integral de Minería de Datos aplicado sobre una muestra masiva de 600.000 registros de afiliados diagnosticados con diabetes del Seguro Integral de Salud (SIS), superando el requerimiento mínimo de 500.000 registros establecido en la evaluación.</p>
-    <p>A lo largo de este trabajo se desarrollan sistemáticamente las etapas de selección, enriquecimiento con fuentes presupuestarias regionales externas, limpieza e imputación estadística, codificación categórica y estandarización de variables. Posteriormente, se aplican técnicas de analítica descriptiva mediante estadísticos y matrices de correlación, distintos enfoques de extracción de reglas de asociación (algoritmo Apriori) y modelos predictivos de regresión (Lineal Múltiple y Regularización Ridge). El objetivo final consiste en evidenciar la ganancia de precisión al incorporar fuentes complementarias e inferir acciones estratégicas y logísticas orientadas a la optimización de los costos y la prevención de complicaciones en los pacientes.</p>
+    <p>En el ámbito de la salud pública, la toma de decisiones fundamentada en datos resulta crítica para optimizar recursos clínicos y financieros. El presente informe aborda el desarrollo de un pipeline integral de Minería de Datos aplicado sobre una muestra inicial de 650.000 registros, con 570.437 registros finales limpios, de afiliados diagnosticados con diabetes del Seguro Integral de Salud (SIS), superando el requerimiento mínimo de 500.000 registros establecido en la evaluación.</p>
+    <p>A lo largo de este trabajo se desarrollan sistemáticamente las etapas de selección, enriquecimiento con datos poblacionales regionales externos del INEI, limpieza e imputación estadística, codificación categórica y estandarización de variables. Posteriormente, se aplican técnicas de analítica descriptiva mediante estadísticos y matrices de correlación, distintos enfoques de extracción de reglas de asociación (algoritmo Apriori) y modelos predictivos de regresión (Lineal Múltiple y Regularización Ridge). El objetivo final consiste en evaluar la variación de precisión al incorporar fuentes complementarias e inferir acciones estratégicas y logísticas orientadas a la optimización de los costos y la prevención de complicaciones en los pacientes.</p>
 
     <!-- 1. Selección de Datos -->
     <h2 id="seccion1">1. Selección de Datos</h2>
@@ -114,15 +118,15 @@
         Columnas seleccionadas (11): ['CODIGO_ANONIMIZADO', 'EDAD', 'SEXO', ...]
     </div>
     <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/paso_0_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
-        <img src="capturas/paso_0_2.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
-        <img src="capturas/paso_0_3.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
-        <img src="capturas/seleccion_datos.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/paso_0_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;" alt="Paso 0: dimensiones, columnas y tipos del dataset original; permite revisar su estructura antes de seleccionar la muestra."><figcaption>Paso 0: dimensiones, columnas y tipos del dataset original; permite revisar su estructura antes de seleccionar la muestra.</figcaption></figure>
+        <figure><img src="capturas/paso_0_2.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;" alt="Paso 0: valores y distribuciones originales de variables clave; evidencia diagnósticos positivos y registros vacíos."><figcaption>Paso 0: valores y distribuciones originales de variables clave; evidencia diagnósticos positivos y registros vacíos.</figcaption></figure>
+        <figure><img src="capturas/paso_0_3.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;" alt="Paso 0: continuación de la inspección inicial. La interpretación de vacíos como NO en la captura es un supuesto no confirmado."><figcaption>Paso 0: continuación de la inspección inicial. La interpretación de vacíos como NO en la captura es un supuesto no confirmado.</figcaption></figure>
+        <figure><img src="capturas/seleccion_datos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 1: extracción reproducible de 650.000 registros y selección de once columnas, incluido el identificador anonimizado."><figcaption>Paso 1: extracción reproducible de 650.000 registros y selección de once columnas, incluido el identificador anonimizado.</figcaption></figure>
     </div>
 
     <!-- 2. Incorporación de Datos de Otras Fuentes -->
     <h2 id="seccion2">2. Incorporación de Datos de Otras Fuentes</h2>
-    <p>Para enriquecer el modelo y dotarlo de un contexto territorial macroeconómico, se incorporó un dataset externo oficial del <strong>Instituto Nacional de Estadística e Informática (INEI)</strong>. El documento base fue el <em>"Estimaciones y Proyecciones de Población Departamental (Boletín Especial Nº 25)"</em>.</p>
+    <p>Para enriquecer el modelo y dotarlo de un contexto territorial demográfico, se incorporó un dataset externo oficial del <strong>Instituto Nacional de Estadística e Informática (INEI)</strong>. El documento base fue el <em>"Estimaciones y Proyecciones de Población Departamental (Boletín Especial Nº 25)"</em>.</p>
     <p>A partir de esta integración, se cruzó la población proyectada al 2024 (25 departamentos) mediante la técnica de "Left Merge", logrando un emparejamiento del <strong>100% de éxito</strong> (0 nulos generados). Adicionalmente, se derivó una nueva métrica avanzada: la <strong>Tasa de Afiliados SIS por cada 1,000 habitantes</strong> (TASA_AFILIADOS_POR_1000_HAB), lo que permite evaluar el impacto relativo del diagnóstico frente a la densidad poblacional real de cada región.</p>
     <div class="evidence-box">
         <strong>Evidencia Consola:</strong><br>
@@ -131,27 +135,27 @@
         - Coincidencia real calculada: 100.00%
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/datos_externos.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/datos_externos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 2: unión con población departamental INEI 2024 y cálculo de afiliados SIS por cada mil habitantes; no corresponde a datos presupuestarios."><figcaption>Paso 2: unión con población departamental INEI 2024 y cálculo de afiliados SIS por cada mil habitantes; no corresponde a datos presupuestarios.</figcaption></figure>
     </div>
 
     <!-- 3. Limpieza de Datos -->
     <h2 id="seccion3">3. Limpieza de Datos</h2>
-    <p>Durante la auditoría de calidad (Paso 0), se identificó un patrón de sistema crucial: las variables de comorbilidad (Ej. CON_DX_OBESIDAD) registraban más de 236 mil a 508 mil valores nulos. Se descubrió que el sistema de salud omite el registro cuando el paciente <strong>no padece la enfermedad</strong>; por lo tanto, la imputación por "moda" hubiese catalogado erróneamente a toda la población como enferma. La limpieza aplicó una conversión empírica de NaN a "NO".</p>
-    <p>A nivel de duplicados, al emplear el <code>CODIGO_ANONIMIZADO</code>, se detectaron y purgaron <strong>79,561 registros redundantes exactos</strong> (mismo paciente en mismo estado). Por último, se aplicó un filtro biológico (eliminando 2 registros con edades &lt;0 o &gt;110 años) y se aplicó la técnica de <strong>Winsorización al Percentil 99</strong> sobre variables de gasto atípico (VALOR_NETO acotado a 1050 soles y DIAS_HOSP a 6 días) para no distorsionar la varianza. El dataset limpio finalizó en <strong>570,437 registros</strong>, cumpliendo el umbral mínimo exigido de medio millón.</p>
+    <p>Durante la auditoría de calidad (Paso 0), las variables de comorbilidad presentaron entre 236.786 y 508.212 valores vacíos en la muestra inicial. El pipeline convierte estos valores a "NO" como supuesto operativo, evitando que la moda "SI" los convierta en diagnósticos positivos. El significado de los vacíos no está confirmado: esta codificación no demuestra ausencia de enfermedad y debe validarse con el diccionario de datos de la fuente.</p>
+    <p>A nivel de duplicados, al emplear el <code>CODIGO_ANONIMIZADO</code>, se detectaron y purgaron <strong>79,561 registros redundantes exactos</strong> (mismo paciente en mismo estado). Por último, se aplicó un filtro biológico (eliminando 2 registros con edades &lt;0 o &gt;110 años) y se aplicó la técnica de <strong>Winsorización al Percentil 99</strong> sobre variables de gasto atípico (VALOR_NETO acotado a 1050,60 soles y DIAS_HOSP a 6 días) para no distorsionar la varianza. El dataset limpio finalizó en <strong>570,437 registros</strong>, cumpliendo el umbral mínimo exigido de medio millón.</p>
     <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/limpieza_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
-        <img src="capturas/limpieza_2.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/limpieza_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;" alt="Paso 3: revisión de nulos y recodificación de diagnósticos vacíos a NO bajo el supuesto del pipeline."><figcaption>Paso 3: revisión de nulos y recodificación de diagnósticos vacíos a NO bajo el supuesto del pipeline.</figcaption></figure>
+        <figure><img src="capturas/limpieza_2.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 3: control de duplicados, edades y valores extremos; quedan 570.437 registros limpios."><figcaption>Paso 3: control de duplicados, edades y valores extremos; quedan 570.437 registros limpios.</figcaption></figure>
     </div>
 
     <!-- 4. Codificación de Datos -->
     <h2 id="seccion4">4. Codificación de Datos</h2>
     <p>Para el procesamiento algorítmico, las variables cualitativas fueron mapeadas al plano numérico bajo dos estrategias:</p>
     <ul>
-        <li><strong>Variables Dicotómicas (Binarias):</strong> Se realizó un mapeo directo donde la presencia de la condición equivale a 1 y su ausencia a 0. Ejemplo: SEXO (Femenino=0, Masculino=1) y Diagnósticos (NO=0, SI=1).</li>
+        <li><strong>Variables Dicotómicas (Binarias):</strong> Se realizó un mapeo directo donde el registro "SI" equivale a 1 y "NO" a 0, incluyendo los vacíos recodificados bajo el supuesto operativo. Ejemplo: SEXO (Femenino=0, Masculino=1) y Diagnósticos (NO=0, SI=1).</li>
         <li><strong>Variables Politómicas (Nominales):</strong> Para variables categóricas sin un orden inherente (como DEPARTAMENTO y TIPO_DIABETES), se aplicó <em>One-Hot Encoding</em> (variables dummy), eliminando la primera categoría (`drop_first=True`) para evitar multicolinealidad. Esto amplió el dataset a un total de 39 columnas.</li>
     </ul>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/codificacion.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/codificacion.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 4: mapeo binario y creación de indicadores para departamento y tipo de diabetes, sin imponer orden a las categorías."><figcaption>Paso 4: mapeo binario y creación de indicadores para departamento y tipo de diabetes, sin imponer orden a las categorías.</figcaption></figure>
     </div>
 
     <!-- 5. Normalización de Datos -->
@@ -159,7 +163,7 @@
     <p>Debido a la profunda disparidad en las escalas de medida de los datos (donde <code>POBLACION_DEPARTAMENTO</code> se mueve en el rango de los millones, <code>VALOR_NETO</code> en cientos, y <code>DIAS_HOSP</code> en unidades discretas), se implementó un proceso de estandarización <strong>Z-Score (StandardScaler)</strong>.</p>
     <p>Este procedimiento restó la media y dividió por la desviación estándar a cada variable cuantitativa, re-escalando los datos a una media de 0 y varianza de 1. Es un paso crítico para garantizar que los modelos de regresión evalúen las magnitudes de los coeficientes de manera justa sin que la variable de mayor tamaño opaque a las variables clínicas.</p>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/normalizacion.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/normalizacion.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 5: estandarización descriptiva por Z-score. En regresión, el escalador se ajusta dentro del pipeline de entrenamiento."><figcaption>Paso 5: estandarización descriptiva por Z-score. En regresión, el escalador se ajusta dentro del pipeline de entrenamiento.</figcaption></figure>
     </div>
 
     <!-- 6. Aplicación de Principales Estadísticos -->
@@ -167,16 +171,16 @@
     <p>El análisis descriptivo revela que la edad media del afiliado activo diabético en el SIS es de <strong>55.93 años</strong>. Respecto a la carga del sistema, la gran mayoría de pacientes no registra días de hospitalización en este corte transversal, pero existe una altísima variabilidad (varianza de 15,551 en VALOR_NETO) generada por un segmento particular de pacientes con atenciones de alto costo.</p>
     <p>Los indicadores de asimetría (skew: 6.92) y curtosis (50.73) del <code>VALOR_NETO</code> demostraron una distribución fuertemente sesgada a la derecha. La matriz de correlación ratificó empíricamente una alta dependencia lineal positiva (+0.84) únicamente entre <code>DIAS_HOSP</code> y el <code>VALOR_NETO</code> del gasto, confirmando la lógica sanitaria.</p>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/estadisticos.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/estadisticos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: resumen de conteo, tendencia central, dispersión y forma de las distribuciones del conjunto procesado."><figcaption>Paso 6: resumen de conteo, tendencia central, dispersión y forma de las distribuciones del conjunto procesado.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="salidas/histogramas_distribucion.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="salidas/histogramas_distribucion.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica."><figcaption>Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="salidas/boxplots_diagnosticos.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="salidas/boxplots_diagnosticos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central."><figcaption>Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="salidas/matriz_correlacion_heatmap.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="salidas/matriz_correlacion_heatmap.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: correlaciones lineales entre variables numéricas; el color y los coeficientes indican dirección y magnitud, sin demostrar causalidad."><figcaption>Paso 6: correlaciones lineales entre variables numéricas; el color y los coeficientes indican dirección y magnitud, sin demostrar causalidad.</figcaption></figure>
     </div>
 
     <!-- 7. Enfoques de Reglas de Asociación -->
@@ -185,10 +189,10 @@
     <ul>
         <li><strong>Frecuencia Global (Soporte >3%):</strong> La principal regla descriptiva masiva señala que el perfil demográfico dominante se concentra en el antecedente "Mujer" derivando al consecuente "Diabetes Mellitus Tipo 2" (Confianza del 72.4%).</li>
         <li><strong>Confianza Alta (>50%):</strong> Pacientes que presentan el antecedente combinado de Hipertensión, Obesidad, Adulto Mayor y Costo Alto reportan Atenciones Frecuentes con una confianza del 100%.</li>
-        <li><strong>Comorbilidad Fuerte (Lift > 1.15):</strong> El mayor hallazgo estadístico detectó que un paciente con <code>[Obesidad, Adulto Mayor y Alto Costo]</code> desencadena una asociación estadística no aleatoria hacia <code>[Hipertensión, Mujer, Atenciones Frecuentes, DM Tipo 2]</code> con un asombroso <strong>Lift de 4.64</strong> y una confianza de 40.9%.</li>
+        <li><strong>Comorbilidad Fuerte (Lift > 1.15):</strong> El mayor hallazgo estadístico detectó que un paciente con <code>[Obesidad, Adulto Mayor y Alto Costo]</code> presenta una asociación estadística con <code>[Hipertensión, Mujer, Atenciones Frecuentes, DM Tipo 2]</code> con un <strong>Lift de 4.64</strong> y una confianza de 40.9%.</li>
     </ul>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/reglas.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/reglas.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 7: evidencia de reglas Apriori y sus métricas. Soporte, confianza y lift responden a preguntas diferentes y no implican causalidad."><figcaption>Paso 7: evidencia de reglas Apriori y sus métricas. Soporte, confianza y lift responden a preguntas diferentes y no implican causalidad.</figcaption></figure>
     </div>
 
 
@@ -204,16 +208,16 @@
     <h2 id="seccion8">8. Aplicación de Modelo de Regresión</h2>
     <p>Para predecir el coste de la atención (VALOR_NETO), se ejecutó un marco comparativo (Cross Validation K-Fold=5 y partición 80/20).</p>
     <p>El "Modelo Base" (exclusivamente clínico) y el "Modelo Enriquecido" (sumando población INEI) obtuvieron la misma precisión predictiva <strong>(R² de 0.739)</strong>, con un RMSE de ~63.9 soles. La regresión Ridge (L2) ratificó la estabilidad de estas predicciones.</p>
-    <p>Sin embargo, al correr un "Modelo sin fuga" (removiendo las variables operativas post-atención como DIAS_HOSP), el R² colapsó a 0.01. Matemáticamente, esto significa que las enfermedades previas no predicen el gasto hospitalario. El gasto es estrictamente dictado por los recursos e insumos operativos que consume el paciente en su ingreso.</p>
+    <p>Al excluir DIAS_HOSP y CANT_ATENCIONES del modelo sin fuga, el R² baja a 0,0178. Los predictores restantes explican poco de la variabilidad del costo en esta configuración; esto no demuestra que las enfermedades previas carezcan de efecto clínico o económico. El mejor desempeño de los modelos con variables operativas depende de conocer los recursos utilizados.</p>
     <div class="evidence-box">
         <strong>Variables de mayor impacto en el modelo de regresión:</strong><br>
         1. DIAS_HOSP (Impacto: 100.06)<br>
         2. CANT_ATENCIONES (Impacto: 22.97)
     </div>
     <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/regresion_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
-        <img src="capturas/regresion_2.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
-        <img src="capturas/regresion_3.png" style="max-width:100%; border:1px solid #ddd;">
+        <figure><img src="capturas/regresion_1.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;" alt="Paso 8: evidencia de la evaluación de regresión y comparación de configuraciones del modelo."><figcaption>Paso 8: evidencia de la evaluación de regresión y comparación de configuraciones del modelo.</figcaption></figure>
+        <figure><img src="capturas/regresion_2.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;" alt="Paso 8: continuación de las métricas de regresión, con evaluación en prueba y validación cruzada según la consola."><figcaption>Paso 8: continuación de las métricas de regresión, con evaluación en prueba y validación cruzada según la consola.</figcaption></figure>
+        <figure><img src="capturas/regresion_3.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 8: resultados y coeficientes del modelo; las diferencias con INEI deben interpretarse según las métricas actuales."><figcaption>Paso 8: resultados y coeficientes del modelo; las diferencias con INEI deben interpretarse según las métricas actuales.</figcaption></figure>
     </div>
 
 
@@ -229,6 +233,7 @@
     <figure><img src="salidas/regresion_predicciones_residuos.png" alt="Costos reales frente a predichos y residuos del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Predicciones y residuos de hasta 5.000 casos seleccionados del conjunto de prueba. La diagonal representa predicción perfecta y la línea horizontal representa residuo cero.</figcaption></figure>
     <figure><img src="salidas/regresion_coeficientes.png" alt="Diez coeficientes de mayor magnitud del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Coeficientes estandarizados: asociación con el costo por una desviación estándar de cada predictor, manteniendo los demás constantes; no representan efectos causales.</figcaption></figure>
 
+<p id="lectura-residuos">En el gráfico real frente a predicho, los puntos alejados de la diagonal representan errores de mayor magnitud. En los residuos se observa dispersión desigual y algunos errores grandes; esto sugiere revisar el ajuste para costos extremos. También aparecen predicciones negativas, una limitación del modelo lineal para una variable de costo no negativa. El gráfico de coeficientes destaca DIAS_HOSP y CANT_ATENCIONES, pero los coeficientes territoriales no implican mejora predictiva global ni efectos causales.</p>
     <!-- 9. Acciones Inferidas en Base a los Resultados -->
     <h2 id="seccion9">9. Acciones Inferidas en Base a los Resultados</h2>
     <p>A partir del análisis holístico, se proponen las siguientes acciones o toma de decisiones:</p>
@@ -241,13 +246,13 @@
         </tr>
         <tr>
             <td><strong>Regresión Predictiva</strong></td>
-            <td>La variable <code>DIAS_HOSP</code> es el vector absoluto del gasto (Beta = +100.06).</td>
+            <td>La variable <code>DIAS_HOSP</code> presenta el mayor coeficiente positivo estandarizado (Beta = +100.06).</td>
             <td><strong>Fomentar hospitalización domiciliaria</strong> y monitoreo ambulatorio preventivo intensivo para pacientes crónicos antes de que lleguen a cama de hospital.</td>
         </tr>
         <tr>
             <td><strong>Reglas de Asociación</strong></td>
             <td>Comorbilidad concurrente significativa (Lift de 4.64) de Hipertensión, DM2 y Atenciones Frecuentes en mujeres geriátricas y con obesidad.</td>
-            <td><strong>Establecer protocolos de tamizaje obligatorio</strong> cardiovascular y metabólico estricto apenas un Adulto Mayor obeso asista al centro de salud.</td>
+            <td><strong>Evaluar protocolos de tamizaje con validación clínica</strong> cardiovascular y metabólico estricto apenas un Adulto Mayor obeso asista al centro de salud.</td>
         </tr>
         <tr>
             <td><strong>Fuente Externa INEI</strong></td>
@@ -256,29 +261,29 @@
         </tr>
     </table>
     <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
-        <img src="capturas/acciones_clean.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;">
+        <figure><img src="capturas/acciones_clean.png" style="max-width:100%; border:1px solid #ddd; margin-bottom: 10px;" alt="Paso 9: propuestas derivadas del análisis. Las afirmaciones causales y recomendaciones clínicas de la captura requieren validación independiente."><figcaption>Paso 9: propuestas derivadas del análisis. Las afirmaciones causales y recomendaciones clínicas de la captura requieren validación independiente.</figcaption></figure>
     </div>
 
     <!-- 10. Conclusión y Acciones a Realizar -->
     <h2 id="seccion10">10. Conclusión y Acciones a Realizar</h2>
-    <p>El presente taller práctico de minería de datos aplicado al contexto de salud (afiliados SIS) permitió extraer información valiosa mediante la ejecución sistemática de un pipeline analítico. Al trabajar con un volumen masivo de datos (600,000 registros procesados), se concluyen los siguientes puntos clave según cada fase del proceso:</p>
+    <p>El presente taller práctico de minería de datos aplicado al contexto de salud (afiliados SIS) permitió extraer información valiosa mediante la ejecución sistemática de un pipeline analítico. Al trabajar con un volumen masivo de datos (650.000 registros iniciales y 570.437 registros finales limpios), se concluyen los siguientes puntos clave según cada fase del proceso:</p>
     <ul>
-        <li><strong>Preprocesamiento y Calidad de los Datos:</strong> Durante la fase de limpieza, se observó que variables clínicas fundamentales, tales como los diagnósticos por obesidad e hipertensión, presentaban un volumen crítico de valores nulos (superando los 200,000 registros). La estrategia de imputación estadística (mediana para numéricos y moda para categóricos) demostró ser altamente efectiva, permitiendo conservar el gran volumen de la muestra sin introducir ruido estadístico severo y dejando el dataset óptimo (0 nulos) para los algoritmos.</li>
-        <li><strong>Inferencia sobre Reglas de Asociación:</strong> La aplicación del algoritmo Apriori arrojó un DataFrame vacío al buscar reglas de asociación fuertes bajo un soporte mínimo del 5%. Esto permite inferir que los padecimientos analizados (hipertensión, obesidad, problemas de salud mental) ocurren de manera muy aislada y diversificada entre los pacientes, o bien, no existe un patrón dominante de "comorbilidad" lo suficientemente masivo que abarque de forma simultánea a más del 5% de toda la población evaluada.</li>
-        <li><strong>Inferencia Predictiva (Modelo de Regresión Múltiple):</strong> El modelo de regresión lineal, configurado para predecir el impacto económico en salud (VALOR_NETO), obtuvo un Coeficiente de Determinación (R²) de 0.3671. Esto significa que las variables elegidas logran explicar cerca del 37% de la variabilidad de los costos médicos. El análisis de coeficientes es concluyente: la variable que detona el mayor costo para el sistema es, por mucho, los Días de Hospitalización (DIAS_HOSP), con un peso predictivo altísimo de 881.5, seguida por la cantidad de atenciones. Sorprendentemente, la presencia de enfermedades crónicas individuales no dispara el costo por sí sola, a menos que esta derive en una hospitalización.</li>
+        <li><strong>Preprocesamiento y Calidad de los Datos:</strong> Se eliminaron 79.561 duplicados exactos y dos registros con edades fuera del rango permitido. Se aplicó winsorización al percentil 99 y conversión de diagnósticos vacíos a "NO" como supuesto pendiente de validación. El conjunto final contiene 570.437 registros y no presenta nulos en las variables procesadas; esto no elimina la incertidumbre sobre el significado de los registros faltantes originales.</li>
+        <li><strong>Inferencia sobre Reglas de Asociación:</strong> Apriori evaluó una muestra de 100.000 registros y exportó diez reglas destacadas por lift. La primera regla tiene lift 4,6416, confianza 40,87% y soporte 3,88%. Los resultados describen asociaciones entre atributos registrados simultáneamente, sin demostrar causalidad ni progresión temporal.</li>
+        <li><strong>Inferencia Predictiva (Modelo de Regresión Múltiple):</strong> El modelo enriquecido obtiene R² = 0,7393, RMSE = 63,96 soles y MAE = 23,86 soles en prueba. DIAS_HOSP presenta el mayor coeficiente positivo estandarizado (+100,06), seguido de CANT_ATENCIONES (+22,98). La incorporación de población INEI no mejora de forma medible estas métricas y el modelo sin variables operativas alcanza R² = 0,0178.</li>
     </ul>
 
     <h3>Acciones a Realizar (Toma de Decisiones):</h3>
     <p>En base a estos resultados técnicos, se sugieren las siguientes acciones estratégicas y directivas:</p>
     <ul>
-        <li><strong>Focalización Presupuestaria Hospitalaria:</strong> Dado que los días de hospitalización son el vector principal del gasto, el Estado o entidad de salud debe enfocar su presupuesto en mejorar la atención ambulatoria temprana. Prevenir que un paciente crónico llegue a hospitalización reducirá drásticamente el impacto económico (VALOR_NETO).</li>
+        <li><strong>Focalización Presupuestaria Hospitalaria:</strong> Dado que los días de hospitalización son el vector principal del gasto, el Estado o entidad de salud debe enfocar su presupuesto en mejorar la atención ambulatoria temprana. El efecto económico de una intervención preventiva debe evaluarse; estos modelos no cuantifican ahorros causales.</li>
         <li><strong>Mejora en la captura de información:</strong> Se debe auditar el proceso de registro médico en los departamentos de origen, debido al gran vacío de datos encontrados en la etapa de limpieza para los diagnósticos.</li>
-        <li><strong>Modelos Predictivos Avanzados:</strong> Para un trabajo a futuro y lograr un R² superior al 37%, se recomienda incorporar variables sociodemográficas más granulares (por ejemplo, encuestas de hábitos alimenticios) o utilizar algoritmos no lineales (como Random Forest o Gradient Boosting) que puedan capturar mejor la complejidad biológica y financiera de la salud pública.</li>
+        <li><strong>Modelos Predictivos Avanzados:</strong> Para un trabajo a futuro y evaluar mejoras respecto del R² actual de 0,7393, se recomienda incorporar variables sociodemográficas más granulares (por ejemplo, encuestas de hábitos alimenticios) o utilizar algoritmos no lineales (como Random Forest o Gradient Boosting) que puedan capturar mejor la complejidad biológica y financiera de la salud pública.</li>
     </ul>
 
 <!-- INICIO ADICION CONCLUSION -->
 <h3 id="interpretacion-resultados-actuales">Interpretación complementaria de los resultados actuales</h3>
-<p><strong>Aclaración de versiones:</strong> se conserva el texto anterior solicitado, pero sus referencias a R² = 0.3671, coeficiente 881.5 y ausencia de reglas corresponden a una versión previa y no describen los CSV actuales. Para interpretar la ejecución disponible deben utilizarse R² = 0.7393 y las reglas con lift máximo de 4.642. Además, la etapa de limpieza actual convierte los diagnósticos nulos a NO según la convención asumida por el pipeline, en vez de imputarlos por moda; esta convención requiere validación con el diccionario de datos porque la ausencia de registro no prueba ausencia de enfermedad.</p>
+<p><strong>Consistencia de la documentación:</strong> El informe se actualizó según los CSV disponibles: 650.000 registros iniciales, 570.437 finales, R² = 0,7393 y lift máximo = 4,6416. Los diagnósticos vacíos se convierten a NO como supuesto del pipeline; la ausencia de registro no prueba ausencia de enfermedad.</p>
 <p><strong>Interpretación del resultado de regresión:</strong> el modelo enriquecido explica aproximadamente 73.93% de la variabilidad del gasto en prueba, sobre el costo winsorizado por el procesamiento. Es útil para describir costos cuando ya se conocen los recursos utilizados. Su desempeño no se puede trasladar a una predicción previa a la hospitalización, donde la configuración sin fuga explica solo 1.78%. Los coeficientes estandarizados expresan cambios asociados a una desviación estándar del predictor, manteniendo los demás constantes; no equivalen al costo causal de un día adicional.</p>
 <p><strong>Interpretación de asociación:</strong> la combinación Obesidad, Adulto Mayor y Costo Alto se asocia con Hipertensión, Mujer, Atenciones Frecuentes y DM Tipo 2. La confianza de 40.87% equivale a unos 41 de cada 100 registros que cumplen el antecedente, y el soporte de 3.88% describe su alcance en la muestra de Apriori. Es una asociación entre atributos simultáneos, no una sucesión de diagnósticos ni evidencia de que una condición desencadene otra.</p>
 <p><strong>Aplicación y límites:</strong> los hallazgos apoyan estudiar perfiles de mayor demanda de recursos y evaluar estrategias de seguimiento. No permiten cuantificar ahorros causales ni justificar protocolos obligatorios por sí solos. Se requiere validación temporal y territorial, revisar la disponibilidad de variables al momento de predecir y evaluar los errores antes de usar el modelo en planificación. La estabilidad en cinco pliegues describe la muestra analizada y no garantiza generalización a otros períodos.</p>
@@ -286,5 +291,24 @@
 
 </div>
 
+<dialog id="visor-imagen" style="max-width:95vw;max-height:95vh;padding:16px;">
+<button type="button" onclick="this.parentElement.close()">Cerrar imagen</button>
+<img alt="" style="display:block;max-width:88vw;max-height:78vh;object-fit:contain;">
+<p></p></dialog>
+<script>
+const visor = document.getElementById('visor-imagen');
+document.querySelectorAll('.report-container img').forEach(img => {
+  img.tabIndex = 0;
+  img.title = 'Abrir imagen ampliada';
+  const abrir = () => {
+    visor.querySelector('img').src = img.src;
+    visor.querySelector('img').alt = img.alt;
+    visor.querySelector('p').textContent = img.closest('figure')?.querySelector('figcaption')?.textContent || img.alt;
+    visor.showModal();
+  };
+  img.addEventListener('click', abrir);
+  img.addEventListener('keydown', event => { if (event.key === 'Enter') abrir(); });
+});
+</script>
 </body>
 </html>

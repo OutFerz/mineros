@@ -18,7 +18,8 @@ def guardar(fig, nombre):
     fig.tight_layout()
     fig.savefig(SALIDAS / nombre, dpi=180, bbox_inches='tight')
     if MOSTRAR_GRAFICOS:
-        plt.show()
+        print(f'[Gráfico] {nombre}. Cierra la ventana para continuar con esta etapa.')
+        plt.show(block=True)
     plt.close(fig)
 
 

@@ -58,7 +58,8 @@ def guardar_y_mostrar_grafico(nombre_archivo):
     plt.savefig(ruta, dpi=300)
     print(f"-> Gráfico guardado: {ruta}")
     if MODO_PANTALLAZOS:
-        plt.show()
+        print(f'[Gráfico] {nombre_archivo}. Cierra la ventana para continuar con esta etapa.')
+        plt.show(block=True)
     else:
         plt.close()
 
