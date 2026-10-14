@@ -31,6 +31,7 @@ from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from mlxtend.frequent_patterns import apriori, association_rules
+from graficos_adicionales import graficar_regresion, graficar_asociacion
 
 # Configuración global
 warnings.filterwarnings('ignore')
@@ -435,6 +436,7 @@ def etapa7_reglas_asociacion(df_limpio):
         print(f"   con Lift = {top_rule['lift']:.2f}, Confianza = {top_rule['confidence']:.1%} y Soporte = {top_rule['support']:.1%}.")
         print("   Demuestra una comorbilidad real y dependencia estadística superior a la aleatoriedad.")
         r_lift_validas.head(10).to_csv('salidas/reglas_asociacion_top_lift.csv', index=False)
+        graficar_asociacion(r_lift_validas.head(10))
     else:
         print("-> Resultado dinámico: No se encontraron reglas que superen el umbral de Lift >= 1.15.")
         print("   Esto indica independencia condicional entre las combinaciones bajo el soporte indicado.")
@@ -587,6 +589,8 @@ def etapa8_modelos_regresion(df_modelo):
     coefs_df = pd.DataFrame({'Variable': X_ext.columns, 'Impacto': reg_ext.coef_}).sort_values(by='Impacto', ascending=False)
     print("\nTop 5 variables con mayor impacto en el costo neto:")
     print(coefs_df.head(5).to_string(index=False))
+    # Evidencia adicional calculada sobre predicciones reales del conjunto de prueba.
+    graficar_regresion(tabla_modelos, y_te, pred_ext, coefs_df)
 
     pausa_pantallazo("Saca pantallazo de los MODELOS DE REGRESIÓN Y EVALUACIÓN DE PRECISIÓN.")
     return coefs_df, dif_r2, dif_mse, pct_dif_mse

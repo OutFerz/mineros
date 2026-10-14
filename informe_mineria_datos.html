@@ -191,6 +191,15 @@
         <img src="capturas/reglas.png" style="max-width:100%; border:1px solid #ddd;">
     </div>
 
+
+<!-- INICIO ADICION ASOCIACION -->
+<h3>7.1. Resultados gráficos de asociación y sucesión ordenada</h3>
+<figure><img src="salidas/asociacion_top_lift.png" alt="Ranking de reglas según lift; R1 a R10 corresponden al CSV de reglas." style="max-width:100%;height:auto;"><figcaption>Ranking de reglas según lift; R1 a R10 corresponden al CSV de reglas.</figcaption></figure>
+<figure><img src="salidas/asociacion_soporte_confianza.png" alt="Relación entre soporte y confianza; el color representa el lift." style="max-width:100%;height:auto;"><figcaption>Relación entre soporte y confianza; el color representa el lift.</figcaption></figure>
+<figure><img src="salidas/sucesion_reglas_metricas.png" alt="Sucesión de métricas en el orden de las reglas, sin significado temporal." style="max-width:100%;height:auto;"><figcaption>Sucesión de métricas en el orden de las reglas, sin significado temporal.</figcaption></figure>
+<p>La primera regla presenta soporte de <strong>3.88%</strong>, confianza de <strong>40.87%</strong> y lift de <strong>4.642</strong>. El soporte mide la proporción de registros que cumplen conjuntamente antecedente y consecuente; la confianza mide la proporción con el consecuente entre quienes cumplen el antecedente. El lift compara esa confianza con la frecuencia general del consecuente. Un lift alto no implica causalidad ni garantiza que la mayoría de los pacientes presente el patrón. Las reglas inversas pueden compartir soporte y lift, pero tener distinta confianza.</p>
+<p>La sucesión representa un ranking descriptivo. No se analizó una secuencia de eventos clínicos: para estudiar progresión temporal se requieren fechas y eventos ordenados por paciente. Estos gráficos muestran únicamente las diez reglas exportadas, no todas las reglas descubiertas.</p>
+<!-- FIN ADICION ASOCIACION -->
     <!-- 8. Aplicación de Modelo de Regresión -->
     <h2 id="seccion8">8. Aplicación de Modelo de Regresión</h2>
     <p>Para predecir el coste de la atención (VALOR_NETO), se ejecutó un marco comparativo (Cross Validation K-Fold=5 y partición 80/20).</p>
@@ -207,6 +216,15 @@
         <img src="capturas/regresion_3.png" style="max-width:100%; border:1px solid #ddd;">
     </div>
 
+
+<!-- INICIO ADICION REGRESION -->
+<h3>8.1. Comparación gráfica y análisis de regresión</h3>
+<figure><img src="salidas/regresion_comparativa_metricas.png" alt="Comparación de R², RMSE y MAE de los cinco modelos sobre la partición de prueba." style="max-width:100%;height:auto;"><figcaption>Comparación de R², RMSE y MAE de los cinco modelos sobre la partición de prueba.</figcaption></figure>
+<figure><img src="salidas/regresion_validacion_cruzada.png" alt="Media y desviación estándar de R² en validación cruzada de cinco pliegues; no son intervalos de confianza." style="max-width:100%;height:auto;"><figcaption>Media y desviación estándar de R² en validación cruzada de cinco pliegues; no son intervalos de confianza.</figcaption></figure>
+<p>El modelo enriquecido alcanza R² = <strong>0.7393</strong>, RMSE = <strong>63.96 soles</strong> y MAE = <strong>23.86 soles</strong>. El R² resume la fracción de variabilidad explicada en prueba; el MAE representa el error absoluto medio, mientras que el RMSE penaliza más los errores grandes. La distancia entre RMSE y MAE es compatible con errores de mayor magnitud en una parte de los casos.</p>
+<p>Al excluir días de hospitalización y cantidad de atenciones, el R² baja a <strong>0.0178</strong> y el RMSE sube a <strong>124.14 soles</strong>. Esta configuración explica poco del gasto con los predictores disponibles antes de la atención; no demuestra que las comorbilidades carezcan de efecto clínico. Base, enriquecido y Ridge presentan resultados prácticamente iguales. La información INEI no aporta una mejora medible en esta comparación individual.</p>
+<p>El modelo logarítmico reconvertido obtiene R² = <strong>-8.1585</strong> y RMSE = <strong>379.08 soles</strong>. Su R² negativo indica que su error cuadrático supera el de predecir la media del conjunto evaluado; esta transformación no mejora los resultados en la escala monetaria. Los gráficos de predicciones, residuos y coeficientes se generan adicionalmente al ejecutar el pipeline completo, usando las predicciones reales, sin reconstruirlas a partir de métricas agregadas.</p>
+<!-- FIN ADICION REGRESION -->
     <!-- 9. Acciones Inferidas en Base a los Resultados -->
     <h2 id="seccion9">9. Acciones Inferidas en Base a los Resultados</h2>
     <p>A partir del análisis holístico, se proponen las siguientes acciones o toma de decisiones:</p>
@@ -253,6 +271,14 @@
         <li><strong>Mejora en la captura de información:</strong> Se debe auditar el proceso de registro médico en los departamentos de origen, debido al gran vacío de datos encontrados en la etapa de limpieza para los diagnósticos.</li>
         <li><strong>Modelos Predictivos Avanzados:</strong> Para un trabajo a futuro y lograr un R² superior al 37%, se recomienda incorporar variables sociodemográficas más granulares (por ejemplo, encuestas de hábitos alimenticios) o utilizar algoritmos no lineales (como Random Forest o Gradient Boosting) que puedan capturar mejor la complejidad biológica y financiera de la salud pública.</li>
     </ul>
+
+<!-- INICIO ADICION CONCLUSION -->
+<h3 id="interpretacion-resultados-actuales">Interpretación complementaria de los resultados actuales</h3>
+<p><strong>Aclaración de versiones:</strong> se conserva el texto anterior solicitado, pero sus referencias a R² = 0.3671, coeficiente 881.5 y ausencia de reglas corresponden a una versión previa y no describen los CSV actuales. Para interpretar la ejecución disponible deben utilizarse R² = 0.7393 y las reglas con lift máximo de 4.642. Además, la etapa de limpieza actual convierte los diagnósticos nulos a NO según la convención asumida por el pipeline, en vez de imputarlos por moda; esta convención requiere validación con el diccionario de datos porque la ausencia de registro no prueba ausencia de enfermedad.</p>
+<p><strong>Interpretación del resultado de regresión:</strong> el modelo enriquecido explica aproximadamente 73.93% de la variabilidad del gasto en prueba, sobre el costo winsorizado por el procesamiento. Es útil para describir costos cuando ya se conocen los recursos utilizados. Su desempeño no se puede trasladar a una predicción previa a la hospitalización, donde la configuración sin fuga explica solo 1.78%. Los coeficientes estandarizados expresan cambios asociados a una desviación estándar del predictor, manteniendo los demás constantes; no equivalen al costo causal de un día adicional.</p>
+<p><strong>Interpretación de asociación:</strong> la combinación Obesidad, Adulto Mayor y Costo Alto se asocia con Hipertensión, Mujer, Atenciones Frecuentes y DM Tipo 2. La confianza de 40.87% equivale a unos 41 de cada 100 registros que cumplen el antecedente, y el soporte de 3.88% describe su alcance en la muestra de Apriori. Es una asociación entre atributos simultáneos, no una sucesión de diagnósticos ni evidencia de que una condición desencadene otra.</p>
+<p><strong>Aplicación y límites:</strong> los hallazgos apoyan estudiar perfiles de mayor demanda de recursos y evaluar estrategias de seguimiento. No permiten cuantificar ahorros causales ni justificar protocolos obligatorios por sí solos. Se requiere validación temporal y territorial, revisar la disponibilidad de variables al momento de predecir y evaluar los errores antes de usar el modelo en planificación. La estabilidad en cinco pliegues describe la muestra analizada y no garantiza generalización a otros períodos.</p>
+<!-- FIN ADICION CONCLUSION -->
 
 </div>
 
