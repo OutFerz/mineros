@@ -186,4 +186,49 @@ flowchart LR
 
 ## 👤 Autor
 
+## Resultados compartidos y ejecución en macOS
+
+Los cambios están en la rama `main`. Para actualizar una copia existente sin descartar cambios locales:
+
+```bash
+git fetch origin
+git switch main
+git pull --ff-only origin main
+```
+
+Si Git indica que hay cambios locales incompatibles, conservarlos antes de actualizar.
+Los cuatro CSV pequeños de `salidas/` se incluyen como excepción a la exclusión de datasets:
+`comparativa_modelos_regresion.csv`, `reglas_asociacion_top_lift.csv`,
+`estadisticos_descriptivos.csv` y `resumen_inferencia_acciones.csv`.
+La comparación contiene cinco filas de métricas de modelos, no registros de pacientes.
+`VALOR_NETO` es la variable de costo utilizada como objetivo; sus estadísticos agregados
+aparecen en `estadisticos_descriptivos.csv`.
+
+La ejecución documentada selecciona 650.000 registros y conserva 570.437 tras la limpieza.
+Estos registros procesados permanecen en memoria: el script no exporta el dataset limpio.
+El CSV maestro debe obtenerse por separado y permanecer en la carpeta del proyecto;
+los datasets grandes siguen excluidos de Git. Los CSV de resumen y las imágenes
+permiten consultar los resultados sin volver a procesar el maestro.
+
+En macOS, con el entorno virtual de cada equipo activado:
+
+```bash
+source .venv/bin/activate
+python completo.py
+```
+
+Con `MODO_PANTALLAZOS = True`, los gráficos se guardan y se abren mediante el backend
+gráfico disponible de Matplotlib. Cerrar cada ventana permite continuar y las pausas
+de consola requieren Enter. Una sesión sin interfaz gráfica solo podrá guardar imágenes.
+Para regenerar los cinco gráficos de resumen desde los CSV existentes:
+
+```bash
+python graficos_adicionales.py
+```
+
+Este último comando solo guarda archivos PNG; abrir `informe_mineria_datos.html` para verlos.
+Las novedades del informe están en 7.1, 8.1 y en la interpretación complementaria de la sección 10.
+Los diagnósticos de regresión (predicciones, residuos y coeficientes) se generan al ejecutar
+`completo.py` y están disponibles como PNG en `salidas/`.
+
 Desarrollado por [OutFerz](https://github.com/OutFerz).

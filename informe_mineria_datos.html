@@ -225,6 +225,10 @@
 <p>Al excluir días de hospitalización y cantidad de atenciones, el R² baja a <strong>0.0178</strong> y el RMSE sube a <strong>124.14 soles</strong>. Esta configuración explica poco del gasto con los predictores disponibles antes de la atención; no demuestra que las comorbilidades carezcan de efecto clínico. Base, enriquecido y Ridge presentan resultados prácticamente iguales. La información INEI no aporta una mejora medible en esta comparación individual.</p>
 <p>El modelo logarítmico reconvertido obtiene R² = <strong>-8.1585</strong> y RMSE = <strong>379.08 soles</strong>. Su R² negativo indica que su error cuadrático supera el de predecir la media del conjunto evaluado; esta transformación no mejora los resultados en la escala monetaria. Los gráficos de predicciones, residuos y coeficientes se generan adicionalmente al ejecutar el pipeline completo, usando las predicciones reales, sin reconstruirlas a partir de métricas agregadas.</p>
 <!-- FIN ADICION REGRESION -->
+    <h3>8.2. Predicciones, residuos y coeficientes del modelo enriquecido</h3>
+    <figure><img src="salidas/regresion_predicciones_residuos.png" alt="Costos reales frente a predichos y residuos del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Predicciones y residuos de hasta 5.000 casos seleccionados del conjunto de prueba. La diagonal representa predicción perfecta y la línea horizontal representa residuo cero.</figcaption></figure>
+    <figure><img src="salidas/regresion_coeficientes.png" alt="Diez coeficientes de mayor magnitud del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Coeficientes estandarizados: asociación con el costo por una desviación estándar de cada predictor, manteniendo los demás constantes; no representan efectos causales.</figcaption></figure>
+
     <!-- 9. Acciones Inferidas en Base a los Resultados -->
     <h2 id="seccion9">9. Acciones Inferidas en Base a los Resultados</h2>
     <p>A partir del análisis holístico, se proponen las siguientes acciones o toma de decisiones:</p>

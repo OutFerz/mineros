@@ -1,0 +1,4 @@
+Dimensión Analítica,Hallazgo Empírico,Evidencia Numérica,Acción Recomendada
+Regresión Predictiva,La variable 'DIAS_HOSP' es el principal detonante del gasto médico.,Coeficiente beta = +100.06 en el modelo estandarizado.,Priorizar programas de hospitalización domiciliaria y monitoreo ambulatorio preventivo.
+Reglas de Asociación,"Comorbilidad concurrente significativa entre [Obesidad, Adulto_Mayor, Costo_Alto] y [Mujer, Atenciones_Frecuentes, Hipertension, DM_Tipo_2].","Lift = 4.64, Confianza = 40.9%, Soporte = 3.9%.","Establecer tamizaje obligatorio de 'Mujer, Atenciones_Frecuentes, Hipertension, DM_Tipo_2' al diagnosticar 'Obesidad, Adulto_Mayor, Costo_Alto' en atención primaria."
+Fuente Externa INEI,La población regional actúa como contexto territorial de escala macro.,Variación de MSE de +0.00 (+0.00%).,Utilizar la población para estimar necesidades de infraestructura y no para predecir costos unitarios.

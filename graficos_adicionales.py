@@ -7,17 +7,18 @@ import ast
 import textwrap
 import numpy as np
 import pandas as pd
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 SALIDAS = Path(__file__).resolve().parent / 'salidas'
+MOSTRAR_GRAFICOS = False
 
 
 def guardar(fig, nombre):
     SALIDAS.mkdir(exist_ok=True)
     fig.tight_layout()
     fig.savefig(SALIDAS / nombre, dpi=180, bbox_inches='tight')
+    if MOSTRAR_GRAFICOS:
+        plt.show()
     plt.close(fig)
 
 

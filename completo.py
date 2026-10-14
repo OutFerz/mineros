@@ -32,11 +32,13 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 from mlxtend.frequent_patterns import apriori, association_rules
 from graficos_adicionales import graficar_regresion, graficar_asociacion
+import graficos_adicionales
 
 # Configuración global
 warnings.filterwarnings('ignore')
 RANDOM_STATE = 42
 MODO_PANTALLAZOS = True  # Cambiar a False si se desea ejecutar sin pausas interactivas
+graficos_adicionales.MOSTRAR_GRAFICOS = MODO_PANTALLAZOS
 N_MUESTRA_INICIAL = 650000  # Muestra inicial para garantizar >= 500.000 tras dedup y limpieza
 
 

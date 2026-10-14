@@ -1,5 +1,9 @@
 # Ignorar todos los archivos de datos
 *.csv
+!salidas/comparativa_modelos_regresion.csv
+!salidas/reglas_asociacion_top_lift.csv
+!salidas/estadisticos_descriptivos.csv
+!salidas/resumen_inferencia_acciones.csv
 
 
 # Ignorar entornos virtuales
