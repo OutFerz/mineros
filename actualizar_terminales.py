@@ -7,7 +7,7 @@ import pandas as pd
 BASE = Path(__file__).resolve().parent
 
 
-def main():
+def generar_bloques_anteriores():
     modelos = pd.read_csv(BASE / 'salidas/comparativa_modelos_regresion.csv')
     reglas = pd.read_csv(BASE / 'salidas/reglas_asociacion_top_lift.csv')
     estadisticos = pd.read_csv(BASE / 'salidas/estadisticos_descriptivos.csv', index_col=0)
@@ -59,6 +59,49 @@ def main():
     assert html.count('<!-- INICIO TERMINAL CSV -->') == len(bloques)
     ruta.write_text(html, encoding='utf-8')
     print(f'Actualizados {len(bloques)} bloques de resultados; gráficos y modelos sin modificar.')
+
+
+def main():
+    ruta = BASE / 'informe_mineria_datos.html'
+    html = ruta.read_text(encoding='utf-8')
+    html = re.sub(r'<!-- INICIO TERMINAL CSV -->.*?<!-- FIN TERMINAL CSV -->\n?', '', html, flags=re.S)
+    html = re.sub(r'<!-- INICIO CAPTURA TERMINAL -->.*?<!-- FIN CAPTURA TERMINAL -->\n?', '', html, flags=re.S)
+    html = re.sub(r'/\* TERMINALES CSV \*/.*?(?=</style>)', '', html, flags=re.S)
+    capturas = {
+        'histogramas_distribucion.png': 'estadisticos.png',
+        'boxplots_diagnosticos.png': 'estadisticos.png',
+        'asociacion_top_lift.png': 'reglas.png',
+        'asociacion_soporte_confianza.png': 'reglas.png',
+        'sucesion_reglas_metricas.png': 'reglas.png',
+        'regresion_comparativa_metricas.png': 'regresion_1.png',
+        'regresion_validacion_cruzada.png': 'regresion_1.png',
+        'regresion_predicciones_residuos.png': 'regresion_1.png',
+        'regresion_coeficientes.png': 'regresion_3.png',
+    }
+    textos = {
+        'estadisticos.png': 'Captura de consola del paso 6: estadísticos del conjunto procesado.',
+        'reglas.png': 'Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe.',
+        'regresion_1.png': 'Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales.',
+        'regresion_3.png': 'Captura de consola del paso 8: cinco coeficientes principales; el gráfico inferior amplía a diez.',
+    }
+    def insertar(match):
+        figura = match.group(0)
+        nombre = Path(re.search(r'src="([^"]+)"', figura).group(1)).name
+        if nombre not in capturas:
+            return figura
+        captura = capturas[nombre]
+        assert (BASE / 'capturas' / captura).is_file()
+        descripcion = escape(textos[captura], quote=True)
+        return ('<!-- INICIO CAPTURA TERMINAL -->\n'
+                f'<figure><img src="capturas/{captura}" alt="{descripcion}" style="max-width:100%;height:auto;">'
+                f'<figcaption>{descripcion}</figcaption></figure>\n'
+                '<!-- FIN CAPTURA TERMINAL -->\n' + figura)
+    html = re.sub(r'<figure>\s*<img\b[^>]+>.*?</figure>', insertar, html, flags=re.S)
+    assert html.count('<!-- INICIO CAPTURA TERMINAL -->') == 9
+    assert 'terminal-resultados' not in html
+    assert all((BASE / src).is_file() for src in re.findall(r'<img[^>]+src="([^"]+)"', html))
+    ruta.write_text(html, encoding='utf-8')
+    print('Listo: nueve capturas reales existentes sobre los gráficos, sin bloques verdes.')
 
 
 if __name__ == '__main__':

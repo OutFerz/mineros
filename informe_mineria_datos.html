@@ -80,11 +80,6 @@
         figcaption { font-size: .92em; color: #46576a; text-align: left; margin-top: 8px; }
         .image-placeholder { flex-direction: column; }
         .image-placeholder img, figure img { cursor: zoom-in; }
-    /* TERMINALES CSV */
-        .terminal-resultados { background:#131c2b; color:#dce5f2; padding:20px; border-radius:10px; margin:20px 0 8px; }
-        .terminal-resultados h4 { color:#85dfaa; margin:0 0 12px; }
-        .terminal-resultados p { font-size:.8em; color:#bdcbdc; text-align:left; }
-        .terminal-resultados pre { white-space:pre-wrap; overflow-wrap:anywhere; font:13px/1.6 Consolas,monospace; }
     </style>
 </head>
 <body>
@@ -179,33 +174,15 @@
         <figure><img src="capturas/estadisticos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: resumen de conteo, tendencia central, dispersión y forma de las distribuciones del conjunto procesado."><figcaption>Paso 6: resumen de conteo, tendencia central, dispersión y forma de las distribuciones del conjunto procesado.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Estadísticos descriptivos</h4><p>Resumen generado desde salidas/estadisticos_descriptivos.csv; no es una terminal interactiva.</p><pre>                         EDAD  CANT_ATENCIONES   VALOR_NETO    DIAS_HOSP
-count             570437.0000      570437.0000  570437.0000  570437.0000
-mean                  55.9300           0.6000      25.8600       0.0800
-std                   16.6800           1.0600     124.7100       0.6700
-min                    0.0000           0.0000       0.0000       0.0000
-25%                   46.0000           0.0000       0.0000       0.0000
-50%                   57.0000           0.0000       0.0000       0.0000
-75%                   68.0000           1.0000       0.0000       0.0000
-max                  110.0000           5.0000    1050.6000       6.0000
-moda                  57.0000           0.0000       0.0000       0.0000
-varianza             278.1500           1.1200   15551.8600       0.4500
-asimetria (skew)      -0.5000           2.0000       6.9200       8.2500
-curtosis               0.1800           3.7700      50.7300      67.5700
-coef_variacion         0.2982           1.7518       4.8222       7.9944</pre></aside>
-<!-- FIN TERMINAL CSV -->
+        <!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/estadisticos.png" alt="Captura de consola del paso 6: estadísticos del conjunto procesado." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 6: estadísticos del conjunto procesado.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/histogramas_distribucion.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica."><figcaption>Paso 6: histogramas de variables cuantitativas; la concentración de valores bajos y la cola del costo muestran una distribución asimétrica.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
-        <!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Resumen de costo y edad</h4><p>Resumen generado desde salidas/estadisticos_descriptivos.csv; no es una terminal interactiva.</p><pre>      EDAD  VALOR_NETO
-min    0.0         0.0
-25%   46.0         0.0
-50%   57.0         0.0
-75%   68.0         0.0
-max  110.0      1050.6</pre></aside>
-<!-- FIN TERMINAL CSV -->
+        <!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/estadisticos.png" alt="Captura de consola del paso 6: estadísticos del conjunto procesado." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 6: estadísticos del conjunto procesado.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/boxplots_diagnosticos.png" style="max-width:100%; border:1px solid #ddd;" alt="Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central."><figcaption>Paso 6: diagramas de caja de costo y edad; muestran mediana, dispersión y observaciones alejadas del rango central.</figcaption></figure>
     </div>
     <div class="image-placeholder" style="padding: 10px; background-color: transparent; border: none;">
@@ -227,78 +204,17 @@ max  110.0      1050.6</pre></aside>
 
 <!-- INICIO ADICION ASOCIACION -->
 <h3>7.1. Resultados gráficos de asociación y sucesión ordenada</h3>
-<!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Reglas ordenadas por lift</h4><p>Resumen generado desde salidas/reglas_asociacion_top_lift.csv; no es una terminal interactiva.</p><pre>R1: frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Obesidad&#x27;})
- -&gt; frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;Mujer&#x27;, &#x27;DM_Tipo_2&#x27;})
-Soporte: 3.88% | Confianza: 40.87% | Lift: 4.641649
-
-R2: frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;Mujer&#x27;, &#x27;DM_Tipo_2&#x27;})
- -&gt; frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Obesidad&#x27;})
-Soporte: 3.88% | Confianza: 44.10% | Lift: 4.641649
-
-R3: frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Mujer&#x27;})
- -&gt; frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;Obesidad&#x27;, &#x27;DM_Tipo_2&#x27;})
-Soporte: 3.88% | Confianza: 47.86% | Lift: 4.624295
-
-R4: frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;Obesidad&#x27;, &#x27;DM_Tipo_2&#x27;})
- -&gt; frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Mujer&#x27;})
-Soporte: 3.88% | Confianza: 37.52% | Lift: 4.624295
-
-R5: frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Mujer&#x27;, &#x27;Obesidad&#x27;})
- -&gt; frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;DM_Tipo_2&#x27;})
-Soporte: 3.88% | Confianza: 57.92% | Lift: 4.623295
-
-R6: frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;DM_Tipo_2&#x27;})
- -&gt; frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Mujer&#x27;, &#x27;Obesidad&#x27;})
-Soporte: 3.88% | Confianza: 30.99% | Lift: 4.623295
-
-R7: frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Obesidad&#x27;})
- -&gt; frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;DM_Tipo_2&#x27;})
-Soporte: 5.49% | Confianza: 57.76% | Lift: 4.610174
-
-R8: frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;DM_Tipo_2&#x27;})
- -&gt; frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Obesidad&#x27;})
-Soporte: 5.49% | Confianza: 43.81% | Lift: 4.610174
-
-R9: frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;Obesidad&#x27;})
- -&gt; frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Mujer&#x27;, &#x27;DM_Tipo_2&#x27;})
-Soporte: 3.88% | Confianza: 29.51% | Lift: 4.590940
-
-R10: frozenset({&#x27;Costo_Alto&#x27;, &#x27;Adulto_Mayor&#x27;, &#x27;Mujer&#x27;, &#x27;DM_Tipo_2&#x27;})
- -&gt; frozenset({&#x27;Atenciones_Frecuentes&#x27;, &#x27;Hipertension&#x27;, &#x27;Obesidad&#x27;})
-Soporte: 3.88% | Confianza: 60.41% | Lift: 4.590940</pre></aside>
-<!-- FIN TERMINAL CSV -->
+<!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/reglas.png" alt="Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/asociacion_top_lift.png" alt="Ranking de reglas según lift; R1 a R10 corresponden al CSV de reglas." style="max-width:100%;height:auto;"><figcaption>Ranking de reglas según lift; R1 a R10 corresponden al CSV de reglas.</figcaption></figure>
-<!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Soporte, confianza y lift</h4><p>Resumen generado desde salidas/reglas_asociacion_top_lift.csv; no es una terminal interactiva.</p><pre>                     support  confidence     lift
-Índice CSV (R1 = 0)
-0                   0.038830    0.408651 4.641649
-1                   0.038830    0.441050 4.641649
-2                   0.038830    0.478615 4.624295
-3                   0.038830    0.375169 4.624295
-4                   0.038830    0.579206 4.623295
-5                   0.038830    0.309946 4.623295
-6                   0.054880    0.577563 4.610174
-7                   0.054880    0.438059 4.610174
-8                   0.038830    0.295106 4.590940
-9                   0.038830    0.604076 4.590940</pre></aside>
-<!-- FIN TERMINAL CSV -->
+<!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/reglas.png" alt="Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/asociacion_soporte_confianza.png" alt="Relación entre soporte y confianza; el color representa el lift." style="max-width:100%;height:auto;"><figcaption>Relación entre soporte y confianza; el color representa el lift.</figcaption></figure>
-<!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Sucesión ordenada de reglas</h4><p>Resumen generado desde salidas/reglas_asociacion_top_lift.csv; no es una terminal interactiva.</p><pre>Orden: R1 a R10 según el CSV; no representa tiempo.
-
-    lift  confidence  support
-4.641649    0.408651  0.03883
-4.641649    0.441050  0.03883
-4.624295    0.478615  0.03883
-4.624295    0.375169  0.03883
-4.623295    0.579206  0.03883
-4.623295    0.309946  0.03883
-4.610174    0.577563  0.05488
-4.610174    0.438059  0.05488
-4.590940    0.295106  0.03883
-4.590940    0.604076  0.03883</pre></aside>
-<!-- FIN TERMINAL CSV -->
+<!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/reglas.png" alt="Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 7: reglas y métricas de asociación. Las limitaciones de interpretación se explican en el informe.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/sucesion_reglas_metricas.png" alt="Sucesión de métricas en el orden de las reglas, sin significado temporal." style="max-width:100%;height:auto;"><figcaption>Sucesión de métricas en el orden de las reglas, sin significado temporal.</figcaption></figure>
 <p>La primera regla presenta soporte de <strong>3.88%</strong>, confianza de <strong>40.87%</strong> y lift de <strong>4.642</strong>. El soporte mide la proporción de registros que cumplen conjuntamente antecedente y consecuente; la confianza mide la proporción con el consecuente entre quienes cumplen el antecedente. El lift compara esa confianza con la frecuencia general del consecuente. Un lift alto no implica causalidad ni garantiza que la mayoría de los pacientes presente el patrón. Las reglas inversas pueden compartir soporte y lift, pero tener distinta confianza.</p>
 <p>La sucesión representa un ranking descriptivo. No se analizó una secuencia de eventos clínicos: para estudiar progresión temporal se requieren fechas y eventos ordenados por paciente. Estos gráficos muestran únicamente las diez reglas exportadas, no todas las reglas descubiertas.</p>
@@ -322,87 +238,26 @@ Soporte: 3.88% | Confianza: 60.41% | Lift: 4.590940</pre></aside>
 
 <!-- INICIO ADICION REGRESION -->
 <h3>8.1. Comparación gráfica y análisis de regresión</h3>
-<!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Resultados de los cinco modelos</h4><p>Resumen generado desde salidas/comparativa_modelos_regresion.csv; no es una terminal interactiva.</p><pre>1. Base (Clínico SIS)
----------------------------------------------
-R² Test : 0.739265
-RMSE    : 63.961331 soles
-MAE     : 23.856876 soles
-
-2. Enriquecido (+ Población INEI &amp; Tasa)
----------------------------------------------
-R² Test : 0.739265
-RMSE    : 63.961331 soles
-MAE     : 23.856876 soles
-
-3. Ridge Regularizado (+ INEI)
----------------------------------------------
-R² Test : 0.739265
-RMSE    : 63.961367 soles
-MAE     : 23.857809 soles
-
-4. Sin Fuga (Pre-hospitalización)
----------------------------------------------
-R² Test : 0.017788
-RMSE    : 124.142531 soles
-MAE     : 43.602080 soles
-
-5. Transformación log1p (Reconvertido)
----------------------------------------------
-R² Test : -8.158534
-RMSE    : 379.080042 soles
-MAE     : 34.880488 soles</pre></aside>
-<!-- FIN TERMINAL CSV -->
+<!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/regresion_1.png" alt="Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/regresion_comparativa_metricas.png" alt="Comparación de R², RMSE y MAE de los cinco modelos sobre la partición de prueba." style="max-width:100%;height:auto;"><figcaption>Comparación de R², RMSE y MAE de los cinco modelos sobre la partición de prueba.</figcaption></figure>
-<!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Validación cruzada de cinco pliegues</h4><p>Resumen generado desde salidas/comparativa_modelos_regresion.csv; no es una terminal interactiva.</p><pre>1. Base (Clínico SIS)
-R² CV   : 0.7424 ± 0.0021
-RMSE CV : 63.30 ± 0.49
-MAE CV  : 23.64 ± 0.14
-
-2. Enriquecido (+ Población INEI &amp; Tasa)
-R² CV   : 0.7424 ± 0.0021
-RMSE CV : 63.30 ± 0.49
-MAE CV  : 23.64 ± 0.14
-
-3. Ridge Regularizado (+ INEI)
-R² CV   : 0.7424 ± 0.0021
-RMSE CV : 63.30 ± 0.49
-MAE CV  : 23.64 ± 0.14
-
-4. Sin Fuga (Pre-hospitalización)
-R² CV   : 0.0184 ± 0.0007
-RMSE CV : 123.55 ± 0.74
-MAE CV  : 43.61 ± 0.15
-
-5. Transformación log1p (Reconvertido)
-R² CV   : N/A (Escala log)
-RMSE CV : N/A (Escala log)
-MAE CV  : N/A (Escala log)</pre></aside>
-<!-- FIN TERMINAL CSV -->
+<!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/regresion_1.png" alt="Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/regresion_validacion_cruzada.png" alt="Media y desviación estándar de R² en validación cruzada de cinco pliegues; no son intervalos de confianza." style="max-width:100%;height:auto;"><figcaption>Media y desviación estándar de R² en validación cruzada de cinco pliegues; no son intervalos de confianza.</figcaption></figure>
 <p>El modelo enriquecido alcanza R² = <strong>0.7393</strong>, RMSE = <strong>63.96 soles</strong> y MAE = <strong>23.86 soles</strong>. El R² resume la fracción de variabilidad explicada en prueba; el MAE representa el error absoluto medio, mientras que el RMSE penaliza más los errores grandes. La distancia entre RMSE y MAE es compatible con errores de mayor magnitud en una parte de los casos.</p>
 <p>Al excluir días de hospitalización y cantidad de atenciones, el R² baja a <strong>0.0178</strong> y el RMSE sube a <strong>124.14 soles</strong>. Esta configuración explica poco del gasto con los predictores disponibles antes de la atención; no demuestra que las comorbilidades carezcan de efecto clínico. Base, enriquecido y Ridge presentan resultados prácticamente iguales. La información INEI no aporta una mejora medible en esta comparación individual.</p>
 <p>El modelo logarítmico reconvertido obtiene R² = <strong>-8.1585</strong> y RMSE = <strong>379.08 soles</strong>. Su R² negativo indica que su error cuadrático supera el de predecir la media del conjunto evaluado; esta transformación no mejora los resultados en la escala monetaria. Los gráficos de predicciones, residuos y coeficientes se generan adicionalmente al ejecutar el pipeline completo, usando las predicciones reales, sin reconstruirlas a partir de métricas agregadas.</p>
 <!-- FIN ADICION REGRESION -->
     <h3>8.2. Predicciones, residuos y coeficientes del modelo enriquecido</h3>
-    <!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Evaluación del modelo enriquecido</h4><p>Resumen generado desde salidas/comparativa_modelos_regresion.csv; no es una terminal interactiva.</p><pre>2. Enriquecido (+ Población INEI &amp; Tasa)
----------------------------------------------
-R² Test : 0.739265
-RMSE    : 63.961331 soles
-MAE     : 23.856876 soles
-
-El gráfico muestra hasta 5.000 casos de prueba.
-Los CSV agregados no contienen las predicciones ni residuos individuales.</pre></aside>
-<!-- FIN TERMINAL CSV -->
+    <!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/regresion_1.png" alt="Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 8: comparación de modelos y métricas de evaluación; aporta contexto global y no contiene residuos individuales.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/regresion_predicciones_residuos.png" alt="Costos reales frente a predichos y residuos del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Predicciones y residuos de hasta 5.000 casos seleccionados del conjunto de prueba. La diagonal representa predicción perfecta y la línea horizontal representa residuo cero.</figcaption></figure>
-    <!-- INICIO TERMINAL CSV -->
-<aside class="terminal-resultados"><h4>Terminal — Contexto de los coeficientes</h4><p>Resumen generado desde salidas/comparativa_modelos_regresion.csv (identificación del modelo); no es una terminal interactiva.</p><pre>Modelo: Enriquecido (+ población INEI y tasa).
-Coeficientes por desviación estándar del predictor (soles).
-Los valores individuales de las barras no se exportan al CSV de métricas.
-Consultar las etiquetas del gráfico y la salida del paso 8.</pre></aside>
-<!-- FIN TERMINAL CSV -->
+    <!-- INICIO CAPTURA TERMINAL -->
+<figure><img src="capturas/regresion_3.png" alt="Captura de consola del paso 8: cinco coeficientes principales; el gráfico inferior amplía a diez." style="max-width:100%;height:auto;"><figcaption>Captura de consola del paso 8: cinco coeficientes principales; el gráfico inferior amplía a diez.</figcaption></figure>
+<!-- FIN CAPTURA TERMINAL -->
 <figure><img src="salidas/regresion_coeficientes.png" alt="Diez coeficientes de mayor magnitud del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Coeficientes estandarizados: asociación con el costo por una desviación estándar de cada predictor, manteniendo los demás constantes; no representan efectos causales.</figcaption></figure>
 
 <p id="lectura-residuos">En el gráfico real frente a predicho, los puntos alejados de la diagonal representan errores de mayor magnitud. En los residuos se observa dispersión desigual y algunos errores grandes; esto sugiere revisar el ajuste para costos extremos. También aparecen predicciones negativas, una limitación del modelo lineal para una variable de costo no negativa. El gráfico de coeficientes destaca DIAS_HOSP y CANT_ATENCIONES, pero los coeficientes territoriales no implican mejora predictiva global ni efectos causales.</p>
