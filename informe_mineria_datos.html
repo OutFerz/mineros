@@ -204,6 +204,7 @@
 
 <!-- INICIO ADICION ASOCIACION -->
 <h3>7.1. Resultados gráficos de asociación y sucesión ordenada</h3>
+<p id="orden-reglas">Las capturas corresponden a distintas ejecuciones del mismo análisis. Entre reglas empatadas en lift puede variar el orden del ranking: las etiquetas R1 a R10 son posiciones de cada exportación, no identificadores permanentes. Para comparar capturas y gráficos, comprobar antecedentes, consecuentes y confianza. Los gráficos y el CSV compartidos reflejan la última ejecución disponible.</p>
 <!-- INICIO CAPTURA INDIVIDUAL -->
 <figure><img src="capturas/terminal_reglas.png" alt="Captura de consola: Reglas ordenadas por lift" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Reglas ordenadas por lift.</figcaption></figure>
 <!-- FIN CAPTURA INDIVIDUAL -->
@@ -212,11 +213,14 @@
 <figure><img src="capturas/terminal_soporte_confianza.png" alt="Captura de consola: Soporte, confianza y lift" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Soporte, confianza y lift.</figcaption></figure>
 <!-- FIN CAPTURA INDIVIDUAL -->
 <figure><img src="salidas/asociacion_soporte_confianza.png" alt="Relación entre soporte y confianza; el color representa el lift." style="max-width:100%;height:auto;"><figcaption>Relación entre soporte y confianza; el color representa el lift.</figcaption></figure>
+<!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_sucesion.png" alt="Captura de consola: Sucesión ordenada de reglas" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Sucesión ordenada de reglas.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
 <figure><img src="salidas/sucesion_reglas_metricas.png" alt="Sucesión de métricas en el orden de las reglas, sin significado temporal." style="max-width:100%;height:auto;"><figcaption>Sucesión de métricas en el orden de las reglas, sin significado temporal.</figcaption></figure>
 <!-- INICIO MEJOR REGLA -->
 <figure><img src="capturas/terminal_mejor.png" alt="Captura independiente de la regla con mayor lift" style="max-width:100%;height:auto;"><figcaption>Regla con mayor lift: antecedentes, consecuentes, soporte 3,883%, confianza 40,865% y lift 4,641649.</figcaption></figure>
 <!-- FIN MEJOR REGLA -->
-<p>La primera regla presenta soporte de <strong>3.88%</strong>, confianza de <strong>40.87%</strong> y lift de <strong>4.642</strong>. El soporte mide la proporción de registros que cumplen conjuntamente antecedente y consecuente; la confianza mide la proporción con el consecuente entre quienes cumplen el antecedente. El lift compara esa confianza con la frecuencia general del consecuente. Un lift alto no implica causalidad ni garantiza que la mayoría de los pacientes presente el patrón. Las reglas inversas pueden compartir soporte y lift, pero tener distinta confianza.</p>
+<p id="regla-ejemplo">La regla Obesidad, Adulto Mayor y Costo Alto hacia Hipertensión, Mujer, Atenciones Frecuentes y DM Tipo 2 presenta soporte de <strong>3.88%</strong>, confianza de <strong>40.87%</strong> y lift de <strong>4.642</strong>. El soporte mide la proporción de registros que cumplen conjuntamente antecedente y consecuente; la confianza mide la proporción con el consecuente entre quienes cumplen el antecedente. El lift compara esa confianza con la frecuencia general del consecuente. Un lift alto no implica causalidad ni garantiza que la mayoría de los pacientes presente el patrón. Las reglas inversas pueden compartir soporte y lift, pero tener distinta confianza.</p>
 <p>La sucesión representa un ranking descriptivo. No se analizó una secuencia de eventos clínicos: para estudiar progresión temporal se requieren fechas y eventos ordenados por paciente. Estos gráficos muestran únicamente las diez reglas exportadas, no todas las reglas descubiertas.</p>
 <!-- FIN ADICION ASOCIACION -->
     <!-- 8. Aplicación de Modelo de Regresión -->
@@ -251,8 +255,14 @@
 <p>El modelo logarítmico reconvertido obtiene R² = <strong>-8.1585</strong> y RMSE = <strong>379.08 soles</strong>. Su R² negativo indica que su error cuadrático supera el de predecir la media del conjunto evaluado; esta transformación no mejora los resultados en la escala monetaria. Los gráficos de predicciones, residuos y coeficientes se generan adicionalmente al ejecutar el pipeline completo, usando las predicciones reales, sin reconstruirlas a partir de métricas agregadas.</p>
 <!-- FIN ADICION REGRESION -->
     <h3>8.2. Predicciones, residuos y coeficientes del modelo enriquecido</h3>
-    <figure><img src="salidas/regresion_predicciones_residuos.png" alt="Costos reales frente a predichos y residuos del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Predicciones y residuos de hasta 5.000 casos seleccionados del conjunto de prueba. La diagonal representa predicción perfecta y la línea horizontal representa residuo cero.</figcaption></figure>
-    <figure><img src="salidas/regresion_coeficientes.png" alt="Diez coeficientes de mayor magnitud del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Coeficientes estandarizados: asociación con el costo por una desviación estándar de cada predictor, manteniendo los demás constantes; no representan efectos causales.</figcaption></figure>
+    <!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_residuos.png" alt="Captura de consola: Diagnóstico de residuos" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Diagnóstico de residuos.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
+<figure><img src="salidas/regresion_predicciones_residuos.png" alt="Costos reales frente a predichos y residuos del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Predicciones y residuos de hasta 5.000 casos seleccionados del conjunto de prueba. La diagonal representa predicción perfecta y la línea horizontal representa residuo cero.</figcaption></figure>
+    <!-- INICIO CAPTURA INDIVIDUAL -->
+<figure><img src="capturas/terminal_coeficientes.png" alt="Captura de consola: Coeficientes del modelo" style="max-width:100%;height:auto;"><figcaption>Captura independiente: Coeficientes del modelo.</figcaption></figure>
+<!-- FIN CAPTURA INDIVIDUAL -->
+<figure><img src="salidas/regresion_coeficientes.png" alt="Diez coeficientes de mayor magnitud del modelo enriquecido" style="max-width:100%;height:auto;"><figcaption>Coeficientes estandarizados: asociación con el costo por una desviación estándar de cada predictor, manteniendo los demás constantes; no representan efectos causales.</figcaption></figure>
 
 <p id="lectura-residuos">En el gráfico real frente a predicho, los puntos alejados de la diagonal representan errores de mayor magnitud. En los residuos se observa dispersión desigual y algunos errores grandes; esto sugiere revisar el ajuste para costos extremos. También aparecen predicciones negativas, una limitación del modelo lineal para una variable de costo no negativa. El gráfico de coeficientes destaca DIAS_HOSP y CANT_ATENCIONES, pero los coeficientes territoriales no implican mejora predictiva global ni efectos causales.</p>
     <!-- 9. Acciones Inferidas en Base a los Resultados -->
@@ -290,7 +300,7 @@
     <p>El presente taller práctico de minería de datos aplicado al contexto de salud (afiliados SIS) permitió extraer información valiosa mediante la ejecución sistemática de un pipeline analítico. Al trabajar con un volumen masivo de datos (650.000 registros iniciales y 570.437 registros finales limpios), se concluyen los siguientes puntos clave según cada fase del proceso:</p>
     <ul>
         <li><strong>Preprocesamiento y Calidad de los Datos:</strong> Se eliminaron 79.561 duplicados exactos y dos registros con edades fuera del rango permitido. Se aplicó winsorización al percentil 99 y conversión de diagnósticos vacíos a "NO" como supuesto pendiente de validación. El conjunto final contiene 570.437 registros y no presenta nulos en las variables procesadas; esto no elimina la incertidumbre sobre el significado de los registros faltantes originales.</li>
-        <li><strong>Inferencia sobre Reglas de Asociación:</strong> Apriori evaluó una muestra de 100.000 registros y exportó diez reglas destacadas por lift. La primera regla tiene lift 4,6416, confianza 40,87% y soporte 3,88%. Los resultados describen asociaciones entre atributos registrados simultáneamente, sin demostrar causalidad ni progresión temporal.</li>
+        <li><strong>Inferencia sobre Reglas de Asociación:</strong> Apriori evaluó una muestra de 100.000 registros y exportó diez reglas destacadas por lift. La regla descrita de Obesidad, Adulto Mayor y Costo Alto tiene lift 4,6416, confianza 40,87% y soporte 3,88%. Los resultados describen asociaciones entre atributos registrados simultáneamente, sin demostrar causalidad ni progresión temporal.</li>
         <li><strong>Inferencia Predictiva (Modelo de Regresión Múltiple):</strong> El modelo enriquecido obtiene R² = 0,7393, RMSE = 63,96 soles y MAE = 23,86 soles en prueba. DIAS_HOSP presenta el mayor coeficiente positivo estandarizado (+100,06), seguido de CANT_ATENCIONES (+22,98). La incorporación de población INEI no mejora de forma medible estas métricas y el modelo sin variables operativas alcanza R² = 0,0178.</li>
     </ul>
 

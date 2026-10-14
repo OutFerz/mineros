@@ -24,6 +24,10 @@ PUNTOS = {
 def main():
     ruta = BASE / 'informe_mineria_datos.html'
     html = ruta.read_text(encoding='utf-8')
+    html = html.replace('<p>La primera regla presenta', '<p id="regla-ejemplo">La regla Obesidad, Adulto Mayor y Costo Alto hacia Hipertensión, Mujer, Atenciones Frecuentes y DM Tipo 2 presenta')
+    html = html.replace('La primera regla tiene lift 4,6416', 'La regla descrita de Obesidad, Adulto Mayor y Costo Alto tiene lift 4,6416')
+    if 'id="orden-reglas"' not in html:
+        html = html.replace('<h3>7.1. Resultados gráficos de asociación y sucesión ordenada</h3>', '<h3>7.1. Resultados gráficos de asociación y sucesión ordenada</h3>\n<p id="orden-reglas">Las capturas corresponden a distintas ejecuciones del mismo análisis. Entre reglas empatadas en lift puede variar el orden del ranking: las etiquetas R1 a R10 son posiciones de cada exportación, no identificadores permanentes. Para comparar capturas y gráficos, comprobar antecedentes, consecuentes y confianza. Los gráficos y el CSV compartidos reflejan la última ejecución disponible.</p>')
     for marcador in ['TERMINAL CSV', 'CAPTURA TERMINAL', 'RESUMEN CSV NUEVO', 'CAPTURA INDIVIDUAL', 'MEJOR REGLA']:
         html = re.sub(f'<!-- INICIO {marcador} -->.*?<!-- FIN {marcador} -->\\n?', '', html, flags=re.S)
     presentes, faltantes = [], []
@@ -50,8 +54,8 @@ def main():
                      '<figure><img src="capturas/terminal_mejor.png" alt="Captura independiente de la regla con mayor lift" style="max-width:100%;height:auto;">'
                      '<figcaption>Regla con mayor lift: antecedentes, consecuentes, soporte 3,883%, confianza 40,865% y lift 4,641649.</figcaption></figure>\n'
                      '<!-- FIN MEJOR REGLA -->\n')
-        assert '<p>La primera regla presenta' in html
-        html = html.replace('<p>La primera regla presenta', evidencia + '<p>La primera regla presenta', 1)
+        assert '<p id="regla-ejemplo">' in html
+        html = html.replace('<p id="regla-ejemplo">', evidencia + '<p id="regla-ejemplo">', 1)
     assert len(presentes) + len(faltantes) == 9
     assert all((BASE / src).is_file() for src in re.findall(r'<img[^>]+src="([^"]+)"', html))
     ruta.write_text(html, encoding='utf-8')

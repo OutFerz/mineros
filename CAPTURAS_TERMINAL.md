@@ -14,9 +14,9 @@ con el nombre indicado. Los comandos leen los CSV; no entrenan modelos.
 8. `python resumen_terminal.py --seccion residuos` → `capturas/terminal_residuos.png`
 9. `python resumen_terminal.py --seccion coeficientes` → `capturas/terminal_coeficientes.png`
 
-Los puntos 1, 2, 3, 4, 6 y 7 ya tienen capturas independientes aportadas por el usuario.
+Los nueve puntos ya tienen capturas independientes aportadas por el usuario.
 También se incluye `terminal_mejor.png` junto a la interpretación de la regla con mayor lift.
-Faltan las capturas de sucesión, residuos y coeficientes (puntos 5, 8 y 9).
+Las últimas capturas incorporadas son sucesión, residuos y coeficientes (puntos 5, 8 y 9).
 Los puntos 8 y 9 requieren los CSV nuevos `diagnostico_residuos.csv` y
 `coeficientes_regresion.csv`, exportados al ejecutar el paso 8 de `completo.py`
 actualizado. No se deben inventar estos valores a partir del PNG.
