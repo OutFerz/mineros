@@ -326,6 +326,22 @@
     <li style="margin-bottom:12px;"><strong>Aporte de la información INEI.</strong> Incorporar población regional y tasa de afiliados mantiene prácticamente el mismo desempeño que el modelo base. Por tanto, <strong>no se observa una mejora predictiva medible</strong> para el costo individual. Su posible utilidad para planificación territorial requiere una evaluación diferente.</li>
 </ol>
 <p>El R² representa variabilidad explicada, <strong>no porcentaje de aciertos</strong>. Las conclusiones corresponden al costo procesado y winsorizado y requieren validación antes de generalizarse.</p>
+<!-- INICIO DIEZ COMPLEMENTARIOS -->
+<h3>Gráficos complementarios de los resultados</h3>
+<h4>Regresión</h4>
+<figure><img src="salidas/complementario_01.png" alt="Regresión — R² por modelo" style="max-width:100%;height:auto;"><figcaption>1. Base, enriquecido y Ridge presentan resultados similares; el modelo logarítmico reconvertido obtiene un R² negativo.</figcaption></figure>
+<figure><img src="salidas/complementario_02.png" alt="Regresión — raíz del error cuadrático medio (RMSE)" style="max-width:100%;height:auto;"><figcaption>2. Base, enriquecido y Ridge alcanzan el menor RMSE, aproximadamente 63,96 soles.</figcaption></figure>
+<figure><img src="salidas/complementario_03.png" alt="Regresión — error absoluto medio (MAE)" style="max-width:100%;height:auto;"><figcaption>3. Los tres primeros modelos presentan un error absoluto medio de 23,86 soles.</figcaption></figure>
+<figure><img src="salidas/complementario_04.png" alt="Regresión — estabilidad del R² en validación cruzada" style="max-width:100%;height:auto;"><figcaption>4. Base, enriquecido y Ridge muestran poca variación entre pliegues; las barras de error representan desviaciones estándar.</figcaption></figure>
+<h4>Reglas de asociación</h4>
+<figure><img src="salidas/complementario_05.png" alt="Apriori — soporte por regla" style="max-width:100%;height:auto;"><figcaption>5. Las combinaciones de cada regla aparecen conjuntamente en aproximadamente 3,88% a 5,49% de la muestra.</figcaption></figure>
+<figure><img src="salidas/complementario_06.png" alt="Apriori — confianza por regla" style="max-width:100%;height:auto;"><figcaption>6. La frecuencia del consecuente entre quienes cumplen el antecedente varía entre 29,51% y 60,41%.</figcaption></figure>
+<figure><img src="salidas/complementario_07.png" alt="Apriori — lift por regla" style="max-width:100%;height:auto;"><figcaption>7. Todas las reglas muestran asociación positiva; las diferencias son pequeñas y el eje vertical está ampliado.</figcaption></figure>
+<h4>Dataset procesado</h4>
+<figure><img src="salidas/complementario_08.png" alt="Dataset — registros iniciales y finales" style="max-width:100%;height:auto;"><figcaption>8. Después de la limpieza se conservan 570.437 de los 650.000 registros seleccionados.</figcaption></figure>
+<figure><img src="salidas/complementario_09.png" alt="Dataset — resumen de edad" style="max-width:100%;height:auto;"><figcaption>9. La mediana es de 57 años y el 50% central se encuentra entre 46 y 68 años.</figcaption></figure>
+<figure><img src="salidas/complementario_10.png" alt="Dataset — resumen del costo procesado" style="max-width:100%;height:auto;"><figcaption>10. El costo medio es 25,86 soles, con alta dispersión y un máximo winsorizado de 1.050,60 soles.</figcaption></figure>
+<!-- FIN DIEZ COMPLEMENTARIOS -->
 <!-- FIN ADICION CONCLUSION -->
 
 </div>
