@@ -314,10 +314,18 @@
 
 <!-- INICIO ADICION CONCLUSION -->
 <h3 id="interpretacion-resultados-actuales">Interpretación complementaria de los resultados actuales</h3>
-<p><strong>Consistencia de la documentación:</strong> El informe se actualizó según los CSV disponibles: 650.000 registros iniciales, 570.437 finales, R² = 0,7393 y lift máximo = 4,6416. Los diagnósticos vacíos se convierten a NO como supuesto del pipeline; la ausencia de registro no prueba ausencia de enfermedad.</p>
-<p><strong>Interpretación del resultado de regresión:</strong> el modelo enriquecido explica aproximadamente 73.93% de la variabilidad del gasto en prueba, sobre el costo winsorizado por el procesamiento. Es útil para describir costos cuando ya se conocen los recursos utilizados. Su desempeño no se puede trasladar a una predicción previa a la hospitalización, donde la configuración sin fuga explica solo 1.78%. Los coeficientes estandarizados expresan cambios asociados a una desviación estándar del predictor, manteniendo los demás constantes; no equivalen al costo causal de un día adicional.</p>
-<p><strong>Interpretación de asociación:</strong> la combinación Obesidad, Adulto Mayor y Costo Alto se asocia con Hipertensión, Mujer, Atenciones Frecuentes y DM Tipo 2. La confianza de 40.87% equivale a unos 41 de cada 100 registros que cumplen el antecedente, y el soporte de 3.88% describe su alcance en la muestra de Apriori. Es una asociación entre atributos simultáneos, no una sucesión de diagnósticos ni evidencia de que una condición desencadene otra.</p>
-<p><strong>Aplicación y límites:</strong> los hallazgos apoyan estudiar perfiles de mayor demanda de recursos y evaluar estrategias de seguimiento. No permiten cuantificar ahorros causales ni justificar protocolos obligatorios por sí solos. Se requiere validación temporal y territorial, revisar la disponibilidad de variables al momento de predecir y evaluar los errores antes de usar el modelo en planificación. La estabilidad en cinco pliegues describe la muestra analizada y no garantiza generalización a otros períodos.</p>
+<p>El análisis comprende <strong>570.437 registros procesados</strong>. El modelo enriquecido alcanza un <strong>R² de 0,7393</strong>, mientras que las reglas de asociación presentan un <strong>lift máximo de 4,642</strong>. Estos resultados describen relaciones estadísticas, sin demostrar causalidad. La conversión de diagnósticos vacíos a «NO» constituye un supuesto del procesamiento que debe validarse con el diccionario de datos.</p>
+<figure>
+    <img src="salidas/sintesis_regresion_corregida.png" alt="Comparación de modelos: R² de 73,93% para los modelos enriquecido y base, y de 1,78% para el modelo sin variables operativas." style="max-width:100%;height:auto;">
+    <figcaption>Comparación del R² en prueba de tres configuraciones del modelo, calculada desde el CSV de resultados. Haz clic para ampliar.</figcaption>
+</figure>
+<h4>Interpretación del gráfico</h4>
+<ol style="padding-left:28px;line-height:1.8;">
+    <li style="margin-bottom:12px;"><strong>Relevancia de las variables operativas.</strong> Los modelos base y enriquecido explican el <strong>73,93% de la variabilidad del costo</strong> en prueba. Al excluir días de hospitalización y cantidad de atenciones, el <strong>R² disminuye a 1,78%</strong>. Esta diferencia muestra que el desempeño depende considerablemente de conocer los recursos utilizados, sin demostrar que estos causen por sí solos el gasto observado.</li>
+    <li style="margin-bottom:12px;"><strong>Limitación para anticipar costos.</strong> El modelo sin variables operativas conserva diagnósticos y características demográficas y territoriales, pero explica poco de la variabilidad del gasto. Esto limita su utilidad predictiva con esos datos; <strong>no significa que las enfermedades crónicas solo generen costos cuando existe hospitalización</strong>.</li>
+    <li style="margin-bottom:12px;"><strong>Aporte de la información INEI.</strong> Incorporar población regional y tasa de afiliados mantiene prácticamente el mismo desempeño que el modelo base. Por tanto, <strong>no se observa una mejora predictiva medible</strong> para el costo individual. Su posible utilidad para planificación territorial requiere una evaluación diferente.</li>
+</ol>
+<p>El R² representa variabilidad explicada, <strong>no porcentaje de aciertos</strong>. Las conclusiones corresponden al costo procesado y winsorizado y requieren validación antes de generalizarse.</p>
 <!-- FIN ADICION CONCLUSION -->
 
 </div>
