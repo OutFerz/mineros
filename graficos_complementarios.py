@@ -20,6 +20,20 @@ def main():
     figuras = []
 
     def guardar(fig, ax, numero, titulo, subtitulo, descripcion):
+        if numero in [2, 4]:
+            # Versión compacta: conserva métricas y explicita las variables excluidas.
+            fig.suptitle(titulo, fontsize=15, weight='bold', y=.98)
+            fig.text(.5, .925, subtitulo, ha='center', fontsize=10)
+            fig.subplots_adjust(left=.25, right=.97, top=.87, bottom=.16 if numero == 4 else .11)
+            if numero == 4:
+                fig.text(.25, .025, 'Modelo log1p reconvertido: validación cruzada no reportada (N/A).', fontsize=10)
+            for lado in ['top', 'right']:
+                ax.spines[lado].set_visible(False)
+            nombre = f'complementario_{numero:02d}.png'
+            fig.savefig(SALIDAS / nombre, dpi=180, facecolor='white')
+            plt.close(fig)
+            figuras.append((numero, nombre, titulo, descripcion))
+            return
         fig.suptitle(titulo, fontsize=16, weight='bold', y=.97)
         fig.text(.5, .9, subtitulo, ha='center', fontsize=10, color='#526574')
         fig.tight_layout(rect=[0, 0, 1, .86])
@@ -58,7 +72,7 @@ def main():
     for i, (media, d) in enumerate(zip(medias, desv)):
         ax.text(media + .015, i, f'{media:.4f} ± {d:.4f}', va='center')
     guardar(fig, ax, 4, 'Regresión — estabilidad del R² en validación cruzada',
-            '5 pliegues · media ± desviación estándar · validación del modelo log1p no reportada',
+            '5 pliegues · media ± desviación estándar',
             'Base, enriquecido y Ridge muestran poca variación entre pliegues; las barras de error representan desviaciones estándar.')
 
     x = np.arange(1, len(reglas) + 1)
