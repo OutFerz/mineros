@@ -100,6 +100,8 @@
             <li><a href="#seccion8" style="text-decoration: none; color: #2c3e50;">8. Aplicación de Modelo de Regresión</a></li>
             <li><a href="#seccion9" style="text-decoration: none; color: #2c3e50;">9. Acciones Inferidas en Base a los Resultados</a></li>
             <li><a href="#seccion10" style="text-decoration: none; color: #2c3e50;">10. Conclusión y Acciones a Realizar</a></li>
+            <li><a href="#cierre-final" style="text-decoration: none; color: #2c3e50;">11. Cierre integrado</a></li>
+            <li><a href="#referencias" style="text-decoration: none; color: #2c3e50;">12. Referencias y trazabilidad</a></li>
         </ul>
     </div>
 
@@ -140,6 +142,7 @@
 
     <!-- 3. Limpieza de Datos -->
     <h2 id="seccion3">3. Limpieza de Datos</h2>
+    <p><strong>Orden del tratamiento de nulos:</strong> primero se recodifican a «NO» los vacíos de CON_DX_OBESIDAD, CON_DX_HIPERTENSION y CON_DX_SALUDMENTAL, bajo un supuesto operativo no validado. Después, si quedan nulos residuales, el código contempla mediana para variables numéricas y moda para categóricas (o «DESCONOCIDO» cuando no hay moda). Esta rutina residual no sustituye la recodificación inicial de los diagnósticos.</p>
     <p>Durante la auditoría de calidad (Paso 0), las variables de comorbilidad presentaron entre 236.786 y 508.212 valores vacíos en la muestra inicial. El pipeline convierte estos valores a "NO" como supuesto operativo, evitando que la moda "SI" los convierta en diagnósticos positivos. El significado de los vacíos no está confirmado: esta codificación no demuestra ausencia de enfermedad y debe validarse con el diccionario de datos de la fuente.</p>
     <p>A nivel de duplicados, al emplear el <code>CODIGO_ANONIMIZADO</code>, se detectaron y purgaron <strong>79,561 registros redundantes exactos</strong> (mismo paciente en mismo estado). Por último, se aplicó un filtro biológico (eliminando 2 registros con edades &lt;0 o &gt;110 años) y se aplicó la técnica de <strong>Winsorización al Percentil 99</strong> sobre variables de gasto atípico (VALOR_NETO acotado a 1050,60 soles y DIAS_HOSP a 6 días) para no distorsionar la varianza. El dataset limpio finalizó en <strong>570,437 registros</strong>, cumpliendo el umbral mínimo exigido de medio millón.</p>
     <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
@@ -278,17 +281,17 @@
         <tr>
             <td><strong>Regresión Predictiva</strong></td>
             <td>La variable <code>DIAS_HOSP</code> presenta el mayor coeficiente positivo estandarizado (Beta = +100.06).</td>
-            <td><strong>Fomentar hospitalización domiciliaria</strong> y monitoreo ambulatorio preventivo intensivo para pacientes crónicos antes de que lleguen a cama de hospital.</td>
+            <td><strong>Evaluar la demanda de recursos hospitalarios.</strong> El análisis puede orientar preguntas de planificación, pero no demuestra la eficacia ni el ahorro de hospitalización domiciliaria u otras intervenciones clínicas.</td>
         </tr>
         <tr>
             <td><strong>Reglas de Asociación</strong></td>
-            <td>Comorbilidad concurrente significativa (Lift de 4.64) de Hipertensión, DM2 y Atenciones Frecuentes en mujeres geriátricas y con obesidad.</td>
-            <td><strong>Evaluar protocolos de tamizaje con validación clínica</strong> cardiovascular y metabólico estricto apenas un Adulto Mayor obeso asista al centro de salud.</td>
+            <td>Asociación descriptiva entre perfiles registrados simultáneamente, con lift aproximado de 4,64; no se realizó una prueba de significación ni se estableció causalidad.</td>
+            <td><strong>Validar los patrones con especialistas y otras muestras.</strong> Las reglas por sí solas no justifican protocolos obligatorios ni decisiones clínicas individuales.</td>
         </tr>
         <tr>
             <td><strong>Fuente Externa INEI</strong></td>
             <td>La población regional no mejoró el R², actuando solo como un contexto territorial. (Variación de MSE de +0.00%).</td>
-            <td><strong>Utilizar la demografía del INEI</strong> exclusivamente para planificar y mapear las necesidades de infraestructura y abastecimiento por región, no para calcular el costo por cama o paciente.</td>
+            <td><strong>Explorar la información INEI como contexto territorial.</strong> Su utilidad para planificar infraestructura debe evaluarse específicamente; aquí no mejoró de forma medible la predicción del costo individual.</td>
         </tr>
     </table>
     <div class="image-placeholder" style="flex-direction: column; padding: 10px; background-color: transparent; border: none;">
@@ -307,7 +310,7 @@
     <h3>Acciones a Realizar (Toma de Decisiones):</h3>
     <p>En base a estos resultados técnicos, se sugieren las siguientes acciones estratégicas y directivas:</p>
     <ul>
-        <li><strong>Focalización Presupuestaria Hospitalaria:</strong> Dado que los días de hospitalización son el vector principal del gasto, el Estado o entidad de salud debe enfocar su presupuesto en mejorar la atención ambulatoria temprana. El efecto económico de una intervención preventiva debe evaluarse; estos modelos no cuantifican ahorros causales.</li>
+        <li><strong>Planificación de recursos:</strong> Los días de hospitalización presentan el mayor coeficiente positivo estandarizado del modelo enriquecido. Esto permite describir una asociación predictiva con el costo, sin establecer un determinante absoluto ni cuantificar el efecto de una intervención preventiva.</li>
         <li><strong>Mejora en la captura de información:</strong> Se debe auditar el proceso de registro médico en los departamentos de origen, debido al gran vacío de datos encontrados en la etapa de limpieza para los diagnósticos.</li>
         <li><strong>Modelos Predictivos Avanzados:</strong> Para un trabajo a futuro y evaluar mejoras respecto del R² actual de 0,7393, se recomienda incorporar variables sociodemográficas más granulares (por ejemplo, encuestas de hábitos alimenticios) o utilizar algoritmos no lineales (como Random Forest o Gradient Boosting) que puedan capturar mejor la complejidad biológica y financiera de la salud pública.</li>
     </ul>
@@ -343,6 +346,21 @@
 <figure><img src="salidas/complementario_10.png" alt="Dataset — resumen del costo procesado" style="max-width:100%;height:auto;"><figcaption>10. El costo medio es 25,86 soles, con alta dispersión y un máximo winsorizado de 1.050,60 soles.</figcaption></figure>
 <!-- FIN DIEZ COMPLEMENTARIOS -->
 <!-- FIN ADICION CONCLUSION -->
+
+<h2 id="cierre-final">11. Cierre integrado</h2>
+<p>El procesamiento parte de 650.000 registros seleccionados y conserva <strong>570.437 registros finales</strong>. La limpieza combina recodificación de diagnósticos vacíos a «NO» como supuesto operativo, control de duplicados, filtro de edad y winsorización al percentil 99. La ausencia de nulos al finalizar no confirma por sí sola la validez clínica de esa recodificación.</p>
+<p>El modelo enriquecido obtiene <strong>R² = 0,7393, RMSE = 63,96 soles y MAE = 23,86 soles</strong> en prueba. Al excluir DIAS_HOSP y CANT_ATENCIONES, el R² baja a <strong>0,0178</strong>. Esto muestra dependencia predictiva de la información operativa disponible, sin demostrar causalidad ni la eficacia de intervenciones para reducir el gasto. El enriquecimiento INEI no aporta una mejora medible en esta evaluación del costo individual.</p>
+<p>Apriori sí identifica reglas de asociación, con <strong>lift máximo de 4,6416</strong>. La regla con antecedentes Obesidad, Adulto Mayor y Costo Alto presenta confianza de 40,87% y soporte de 3,88%; su inversa comparte lift y soporte, pero tiene confianza de 44,10%. Las reglas describen atributos simultáneos y no una secuencia de enfermedades.</p>
+<p>En consecuencia, el proyecto aporta evidencia descriptiva y predictiva para estudiar la demanda de recursos. Antes de aplicarla fuera de esta muestra, corresponde validar el significado de los diagnósticos vacíos, la disponibilidad temporal de predictores y el desempeño en otros períodos y territorios. Los gráficos complementarios sustentan este cierre; no constituyen por sí solos una validación clínica.</p>
+
+<h2 id="referencias">12. Referencias y trazabilidad</h2>
+<ol>
+    <li><strong>Seguro Integral de Salud (SIS).</strong> Afiliados activos en el Seguro Integral de Salud con diagnóstico de Diabetes Mellitus. Plataforma Nacional de Datos Abiertos del Perú. <a href="https://www.datosabiertos.gob.pe/dataset/afiliados-activos-en-el-seguro-integral-de-salud-con-diagn%C3%B3stico-de-diabetes-mellitus-sis-10">Ficha oficial de la serie y sus recursos</a>. La ficha consultada corresponde a una publicación de diciembre de 2024; se cita como referencia de la serie, no como identificación exacta del archivo local analizado.</li>
+    <li><strong>Instituto Nacional de Estadística e Informática (INEI).</strong> Perú: Estimaciones y Proyecciones de Población Departamental, por Años Calendario y Edad Simple, 1995–2030. Boletín Especial N.º 25. <a href="https://www.gob.pe/institucion/inei/informes-publicaciones/6855196-peru-estimaciones-y-proyecciones-de-poblacion-departamental-por-anos-calendario-y-edad-simple-1995-2030">Publicación oficial</a> y <a href="https://www.inei.gob.pe/media/MenuRecursivo/publicaciones_digitales/Est/Lib1722/libro.pdf">documento completo</a>. Fuente demográfica declarada por el proyecto; se utiliza población proyectada de 2024.</li>
+    <li><strong>Archivos utilizados.</strong> Afiliados_activos_DM_SIS.csv y cantidad_poblacion.xlsx, hoja «2024-2026». La inspección del CSV local registra FECHA_CORTE = 20240426. Debe conservarse la identificación de la descarga original para completar su trazabilidad; no se ha confirmado su equivalencia con la publicación enlazada.</li>
+    <li><strong>Resultados del proyecto.</strong> salidas/comparativa_modelos_regresion.csv, salidas/reglas_asociacion_top_lift.csv, salidas/estadisticos_descriptivos.csv, salidas/coeficientes_regresion.csv y salidas/diagnostico_residuos.csv. Los gráficos se elaboran a partir de las salidas del pipeline completo.py.</li>
+</ol>
+<p>Referencias institucionales consultadas el 16 de octubre de 2026. Los resultados y las limitaciones anteriores corresponden al archivo local procesado, no a todos los afiliados del SIS ni a todos los costos hospitalarios.</p>
 
 </div>
 
