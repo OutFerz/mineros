@@ -580,18 +580,20 @@ def etapa8_modelos_regresion(df_modelo):
     if dif_mse < 0 and abs(pct_dif_mse) >= 0.05:
         print("-> Conclusión: La incorporación de la fuente externa INEI reduce el error y eleva la precisión de forma medible.")
     else:
-        print("-> Conclusión: La incorporación de datos externos territoriales genera una mejora marginal o contextual;")
-        print("   el costo médico individual está dominado abrumadoramente por factores clínicos directos (días de hospitalización).")
+        print("-> Conclusión: No se observa una reducción medible del error con INEI bajo el criterio de comparación aplicado.")
+        print("   Las métricas corresponden al costo individual; no prueban causalidad ni utilidad para planificación territorial.")
 
     print("\nLimitación metodológica del Modelo 4 (Sin Fuga):")
     print(f"Al excluir DIAS_HOSP y CANT_ATENCIONES, el R² cae a {r2_sf:.4f}, evidenciando que predecir el costo")
-    print("únicamente con comorbilidades previas es más complejo que cuando el paciente ya requirió internamiento.")
+    print("con los predictores restantes (diagnósticos, variables demográficas y territoriales) explica poca variabilidad.")
+    print("Esto no demuestra que las enfermedades previas carezcan de efecto clínico o económico.")
 
     # Extracción de coeficientes del modelo enriquecido
     reg_ext = pipe_ext.named_steps['reg']
     coefs_df = pd.DataFrame({'Variable': X_ext.columns, 'Impacto': reg_ext.coef_}).sort_values(by='Impacto', ascending=False)
-    print("\nTop 5 variables con mayor impacto en el costo neto:")
+    print("\nTop 5 coeficientes positivos del modelo enriquecido (soles por desviación estándar del predictor):")
     print(coefs_df.head(5).to_string(index=False))
+    print("Son asociaciones manteniendo los demás predictores constantes; no efectos causales por día o atención.")
     # Evidencias numéricas de los diagnósticos, sin cambiar el ajuste del modelo.
     coefs_df.to_csv('salidas/coeficientes_regresion.csv', index=False)
     residuos = np.asarray(y_te) - pred_ext
@@ -623,39 +625,39 @@ def etapa9_inferencia_acciones(coefs_df, top_rule, dif_r2, dif_mse, pct_dif_mse)
 
     # Lógica condicional para recomendación de regresión
     if 'DIAS' in var_top or 'HOSP' in var_top:
-        hallazgo_reg = f"La variable '{var_top}' es el principal detonante del gasto médico."
-        evidencia_reg = f"Coeficiente beta = {val_top:+.2f} en el modelo estandarizado."
-        accion_reg = "Priorizar programas de hospitalización domiciliaria y monitoreo ambulatorio preventivo."
+        hallazgo_reg = f"'{var_top}' presenta el mayor coeficiente positivo estandarizado en el modelo enriquecido."
+        evidencia_reg = f"Coeficiente = {val_top:+.2f} soles por desviación estándar del predictor; no es un efecto causal."
+        accion_reg = "Estudiar demanda de recursos; evaluar clínicamente cualquier intervención, sin inferir ahorros causales."
     elif 'ATENCIONES' in var_top:
-        hallazgo_reg = f"La variable '{var_top}' domina el gasto en salud."
-        evidencia_reg = f"Coeficiente beta = {val_top:+.2f}."
-        accion_reg = "Unificar atenciones en consultas multidisciplinarias para reducir costos por visita recurrente."
+        hallazgo_reg = f"'{var_top}' presenta el mayor coeficiente positivo estandarizado en el modelo enriquecido."
+        evidencia_reg = f"Coeficiente = {val_top:+.2f} soles por desviación estándar del predictor; no es un efecto causal."
+        accion_reg = "Estudiar patrones de uso de atenciones; la eficacia y el ahorro de intervenciones requieren evaluación específica."
     else:
-        hallazgo_reg = f"La variable '{var_top}' presenta la mayor influencia positiva en el costo."
-        evidencia_reg = f"Coeficiente beta = {val_top:+.2f}."
-        accion_reg = f"Focalizar intervenciones sanitarias directas sobre el factor '{var_top}'."
+        hallazgo_reg = f"'{var_top}' presenta el mayor coeficiente positivo estandarizado en el modelo enriquecido."
+        evidencia_reg = f"Coeficiente = {val_top:+.2f} soles por desviación estándar del predictor; no es un efecto causal."
+        accion_reg = "Validar la asociación con nuevas muestras antes de proponer intervenciones."
 
     # Lógica condicional para recomendación de reglas de asociación
     if top_rule is not None and top_rule['lift'] > 1.0:
         r_ant = ', '.join(list(top_rule['antecedents']))
         r_con = ', '.join(list(top_rule['consequents']))
-        hallazgo_aso = f"Comorbilidad concurrente significativa entre [{r_ant}] y [{r_con}]."
+        hallazgo_aso = f"Asociación entre atributos simultáneos: [{r_ant}] -> [{r_con}]; no implica causalidad."
         evidencia_aso = f"Lift = {top_rule['lift']:.2f}, Confianza = {top_rule['confidence']:.1%}, Soporte = {top_rule['support']:.1%}."
-        accion_aso = f"Establecer tamizaje obligatorio de '{r_con}' al diagnosticar '{r_ant}' en atención primaria."
+        accion_aso = "Evaluar posibles protocolos de tamizaje con validación clínica previa, especialistas y nuevas muestras."
     else:
         hallazgo_aso = "No se detectaron reglas de alta dependencia bajo los umbrales exigidos."
-        evidencia_aso = "Lift <= 1.0 en reglas evaluadas."
+        evidencia_aso = "No hay una regla seleccionada que cumpla los criterios; no demuestra independencia entre atributos."
         accion_aso = "Auditar y estandarizar la captura de diagnósticos secundarios en la red del SIS."
 
     # Lógica condicional para recomendación de fuente externa
     if dif_mse < 0:
-        hallazgo_ext = "La integración de datos demográficos INEI optimiza la precisión del gasto regional."
+        hallazgo_ext = "El MSE del costo individual disminuye en la magnitud indicada; revisar si la diferencia es material."
         evidencia_ext = f"Reducción de MSE en {abs(dif_mse):.2f} unidades ({pct_dif_mse:+.2f}%)."
-        accion_ext = "Ponderar la masa demográfica regional en la asignación presupuestaria hospitalaria."
+        accion_ext = "Evaluar generalización; la utilidad para planificación territorial requiere un análisis específico."
     else:
-        hallazgo_ext = "La población regional actúa como contexto territorial de escala macro."
+        hallazgo_ext = "La incorporación de INEI no reduce el MSE del costo individual en esta comparación."
         evidencia_ext = f"Variación de MSE de {dif_mse:+.2f} ({pct_dif_mse:+.2f}%)."
-        accion_ext = "Utilizar la población para estimar necesidades de infraestructura y no para predecir costos unitarios."
+        accion_ext = "Explorar contexto territorial; la utilidad para infraestructura requiere una evaluación específica."
 
     tabla_resumen_acciones = pd.DataFrame({
         'Dimensión Analítica': ['Regresión Predictiva', 'Reglas de Asociación', 'Fuente Externa INEI'],
