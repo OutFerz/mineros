@@ -1,0 +1,22 @@
+EVALUACIÓN 3 - RESULTADOS GENERADOS AUTOMÁTICAMENTE CON CSV REAL
+Importante: resultados descriptivos; no representan validación clínica.
+
+Archivo original: 1,735,940 filas; muestra de base: 650,000; tras deduplicación: 582,825; válidas para E3: 582,823.
+La semilla 42 reproduce ESTA ejecución, no garantiza la misma submuestra exacta de E2.
+El CSV filtrado puede tener un total distinto de 570.437. La E2 usó un pipeline distinto.
+Etiqueta >=2 atenciones: positivos 93,153; negativos 489,670.
+Diagnósticos vacíos: categoría SIN_REGISTRO (sin asumir ausencia clínica).
+
+CLASIFICACIÓN - muestra 30,000, entrenamiento 24,000, prueba 6,000; KNN con k=5 seleccionado en validación.
+Referencia: Accuracy=0.8402; Accuracy balanceada=0.5000; Precision=0.0000; Recall=0.0000; F1=0.0000; ROC-AUC=0.5000.
+CART: Accuracy=0.5802; Accuracy balanceada=0.6378; Precision=0.2352; Recall=0.7226; F1=0.3549; ROC-AUC=0.6794.
+Arbol_entropia: Accuracy=0.5802; Accuracy balanceada=0.6378; Precision=0.2352; Recall=0.7226; F1=0.3549; ROC-AUC=0.6794.
+KNN: Accuracy=0.8072; Accuracy balanceada=0.5251; Precision=0.2585; Recall=0.1105; F1=0.1549; ROC-AUC=0.5799.
+Logistica: Accuracy=0.6197; Accuracy balanceada=0.6318; Precision=0.2425; Recall=0.6496; F1=0.3532; ROC-AUC=0.6726.
+
+CLUSTERING - muestra 20,000; K-Means k=2; silueta aproximada (submuestra)=0.3225.
+Grupo 0: n=15497; edad media=54.49; atenciones medias=0.15
+Grupo 1: n=4503; edad media=60.45; atenciones medias=2.24
+
+LIMITACIONES: no existe secuencia temporal verificable, imputación de diagnósticos incierta, muestras de algoritmos distintas y PCA utilizado solo como visualización.
+No atribuir estos resultados al documento E2 sin cotejar los datos y la semilla.

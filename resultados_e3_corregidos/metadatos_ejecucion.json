@@ -1,0 +1,88 @@
+{
+  "base": {
+    "originales": 1735940,
+    "muestra_inicial": 650000,
+    "tras_deduplicacion": 582825,
+    "tras_validacion": 582823,
+    "objetivo_0": 489670,
+    "objetivo_1": 93153,
+    "comparar_e2": false
+  },
+  "clasificacion": {
+    "muestra": 30000,
+    "entrenamiento": 24000,
+    "prueba": 6000,
+    "k_elegido": 5,
+    "tasa_positivos": 0.15983333333333333,
+    "metricas": [
+      {
+        "modelo": "Referencia",
+        "accuracy": 0.8401666666666666,
+        "balanced_accuracy": 0.5,
+        "precision_1": 0.0,
+        "recall_1": 0.0,
+        "f1_1": 0.0,
+        "roc_auc": 0.5
+      },
+      {
+        "modelo": "CART",
+        "accuracy": 0.5801666666666667,
+        "balanced_accuracy": 0.6378463026540035,
+        "precision_1": 0.23523421588594703,
+        "recall_1": 0.7226277372262774,
+        "f1_1": 0.35492957746478876,
+        "roc_auc": 0.679367455891926
+      },
+      {
+        "modelo": "Arbol_entropia",
+        "accuracy": 0.5801666666666667,
+        "balanced_accuracy": 0.6378463026540035,
+        "precision_1": 0.23523421588594703,
+        "recall_1": 0.7226277372262774,
+        "f1_1": 0.35492957746478876,
+        "roc_auc": 0.679367455891926
+      },
+      {
+        "modelo": "KNN",
+        "accuracy": 0.8071666666666667,
+        "balanced_accuracy": 0.5251131545104906,
+        "precision_1": 0.25853658536585367,
+        "recall_1": 0.1105318039624609,
+        "f1_1": 0.15485756026296568,
+        "roc_auc": 0.5799248043002541
+      },
+      {
+        "modelo": "Logistica",
+        "accuracy": 0.6196666666666667,
+        "balanced_accuracy": 0.6318002597677149,
+        "precision_1": 0.24250681198910082,
+        "recall_1": 0.6496350364963503,
+        "f1_1": 0.3531746031746032,
+        "roc_auc": 0.672612523087533
+      }
+    ]
+  },
+  "clustering": {
+    "muestra": 20000,
+    "k_elegido": 2,
+    "silueta": 0.32247600736977083,
+    "perfiles": [
+      {
+        "CLUSTER_E3": 0,
+        "n": 15497,
+        "edad_media": 54.494289217267855,
+        "atenciones_media": 0.1510614957733755,
+        "valor_neto_medio": 0.058058979157256246,
+        "dias_hosp_media": 0.0002581144737691166
+      },
+      {
+        "CLUSTER_E3": 1,
+        "n": 4503,
+        "edad_media": 60.4459249389296,
+        "atenciones_media": 2.2378414390406394,
+        "valor_neto_medio": 278.5489651343549,
+        "dias_hosp_media": 0.892516100377526
+      }
+    ]
+  }
+}
