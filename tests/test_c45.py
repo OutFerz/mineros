@@ -55,6 +55,17 @@ class TestC45(unittest.TestCase):
         self.assertEqual(m.root_.atributo, "EDAD")
         self.assertAlmostEqual(m.root_.umbral, 4.5)
 
+    def test_resumen_respeta_umbral_y_no_mayoria(self):
+        # Predominan ceros, pero el umbral 0.20 clasifica el nodo como 1.
+        x = pd.DataFrame({"EDAD": [50] * 10})
+        y = np.array([0] * 7 + [1] * 3)
+        m = C45Classifier(max_depth=2, min_samples_leaf=2,
+                          threshold=0.20, prune=False).fit(x,y)
+        resumen = m.resumen_ramas()
+        self.assertIn("pred_nodo=1", resumen)
+        self.assertIn("p1=0.333", resumen)
+        self.assertTrue(np.all(m.predict(x) == 1))
+
     def test_parametros_invalidos(self):
         with self.assertRaises(ValueError):
             C45Classifier(confidence_factor=1).fit(self.x, self.y)
