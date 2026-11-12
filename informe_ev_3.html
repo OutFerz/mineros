@@ -483,8 +483,8 @@
     <h3>2.5. C4.5: selección, estructura del árbol y evaluación final</h3>
     <p>En validación interna de 4.800 registros, sin utilizar la partición de prueba, se compararon poda activada/desactivada y umbrales de 0,05 a 0,50. La configuración seleccionada fue <strong>sin poda y con umbral de decisión 0,20</strong>, con F1 positivo de 0,3361 y ROC-AUC de 0,6573 en validación. El árbol de esa validación tenía 53 nodos. Al reentrenar el modelo con los 24.000 registros completos de entrenamiento, se obtuvieron 63 nodos con raíz en EDAD.</p>
     <figure>
-        <img src="resultados_e3_corregidos/arbol_C45.png" alt="Representación textual parcial del árbol C4.5, con sus ramas principales y probabilidades estimadas.">
-        <figcaption><strong>Figura 2.5:</strong> Ramas iniciales del árbol C4.5, incluyendo tamaño de nodo, prevalencia positiva estimada y predicción del nodo según el umbral validado 0,20. Es un resumen parcial de un árbol de 63 nodos.</figcaption>
+        <img src="resultados_e3_corregidos/arbol_C45_vista_parcial.svg" alt="Diagrama de las tres primeras capas del árbol C4.5 con ramas, cantidades de registros y proporciones positivas observadas.">
+        <figcaption><strong>Figura 2.5:</strong> Vista esquemática de las primeras divisiones reales de C4.5. Cada tarjeta presenta tamaño del nodo, cantidad de registros positivos y proporción de positivos. No representa predicciones finales: los nodos ilustrados no son necesariamente hojas. El árbol completo consta de 63 nodos y su resumen técnico está en <code>arbol_C45_resumen.txt</code>.</figcaption>
     </figure>
     <figure>
         <img src="resultados_e3_corregidos/confusion_c45.png" alt="Matriz de confusión C4.5 para 6.000 casos de prueba.">
