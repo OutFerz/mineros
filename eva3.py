@@ -28,9 +28,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (ConfusionMatrixDisplay, accuracy_score, balanced_accuracy_score,
                              f1_score, precision_score, recall_score, roc_auc_score,
-                             roc_curve, silhouette_score)
+                             roc_curve, silhouette_score, confusion_matrix)
 from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
+from knn_estable import KNNDeterminista
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier, plot_tree
@@ -157,7 +157,10 @@ def guardar_fig(path):
 
 
 def evaluar(nombre,pipe,Xtr,ytr,Xte,yte,salida):
-    pipe.fit(Xtr,ytr)
+    if nombre == 'KNN':
+        pipe.fit(Xtr,ytr,modelo__sample_ids=Xtr.index.to_numpy())
+    else:
+        pipe.fit(Xtr,ytr)
     p=pipe.predict(Xte)
     proba = pipe.predict_proba(Xte)[:,1]
     d={'modelo':nombre,'accuracy':accuracy_score(yte,p),
@@ -166,6 +169,9 @@ def evaluar(nombre,pipe,Xtr,ytr,Xte,yte,salida):
        'recall_1':recall_score(yte,p,zero_division=0),
        'f1_1':f1_score(yte,p,zero_division=0),
        'roc_auc':roc_auc_score(yte,proba)}
+    if nombre == 'KNN':
+        (salida/'matriz_confusion_knn.json').write_text(
+            json.dumps(confusion_matrix(yte,p,labels=[0,1]).tolist()),encoding='utf-8')
     fig,ax=plt.subplots(figsize=(5.5,4.6))
     ConfusionMatrixDisplay.from_predictions(yte,p,display_labels=['0: <2','1: >=2'],
                                              ax=ax,cmap='Blues',values_format='d')
@@ -222,8 +228,8 @@ def clasificacion(df,salida,n):
     Xt,Xv,yt,yv=train_test_split(Xtr,ytr,test_size=.2,stratify=ytr,random_state=SEED)
     filas_k=[]
     for k in [5,11,21]:
-        mod=Pipeline([('preparar',preprocess()),('modelo',KNeighborsClassifier(n_neighbors=k,weights='distance',n_jobs=-1))])
-        mod.fit(Xt,yt)
+        mod=Pipeline([('preparar',preprocess()),('modelo',KNNDeterminista(n_neighbors=k))])
+        mod.fit(Xt,yt,modelo__sample_ids=Xt.index.to_numpy())
         filas_k.append({'k':k,'f1_validacion':f1_score(yv,mod.predict(Xv),zero_division=0)})
     pd.DataFrame(filas_k).to_csv(salida/'seleccion_k.csv',index=False)
     k=max(filas_k,key=lambda x:(x['f1_validacion'],-x['k']))['k']
@@ -269,7 +275,7 @@ def clasificacion(df,salida,n):
         'C45':C45Classifier(max_depth=6,min_samples_leaf=100,
                             confidence_factor=0.25,prune=elegido_c45['poda'],
                             threshold=elegido_c45['umbral']),
-        'KNN':KNeighborsClassifier(n_neighbors=k,weights='distance',n_jobs=-1),
+        'KNN':KNNDeterminista(n_neighbors=k),
         'Logistica':LogisticRegression(max_iter=2000,class_weight='balanced',solver='lbfgs',random_state=SEED),
     }
     resumen=[]; rocs={}; fitted={}
@@ -335,7 +341,7 @@ def clasificacion(df,salida,n):
     guardar_fig(salida/'coeficientes_logisticos.png')
     pd.DataFrame({'variable':coef.index,'coeficiente':coef.values}).to_csv(salida/'coeficientes_logisticos.csv',index=False)
     return {'muestra':len(d),'entrenamiento':len(Xtr),'prueba':len(Xte),'k_elegido':int(k),
-            'tasa_positivos':float(y.mean()),'c45_validacion':elegido_c45,
+            'tasa_positivos':float(y.mean()),'knn_desempate':{'orden':'distancia_euclidiana_cuadrada_redondeada_y_id_fila_pre_split','decimales_distancia_cuadrada':12,'ponderacion':'inversa_distancia; solo ceros si existen','empate_voto':'primera clase en orden'},'c45_validacion':elegido_c45,
             'c45_arbol':diagnostico,'metricas':resumen}
 
 
@@ -458,7 +464,13 @@ def main():
     c=clasificacion(df,args.salida,args.n_clas)
     k=clustering(df,args.salida,args.n_cluster)
     reporte_texto(info,c,k,args.salida)
-    (args.salida/'metadatos_ejecucion.json').write_text(json.dumps({'base':info,'clasificacion':c,'clustering':k},indent=2,ensure_ascii=False),encoding='utf-8')
+    import platform, sklearn, scipy
+    versiones={'python':platform.python_version(),'numpy':np.__version__,'pandas':pd.__version__,'scipy':scipy.__version__,'scikit_learn':sklearn.__version__,'matplotlib':matplotlib.__version__}
+    (args.salida/'metadatos_ejecucion.json').write_text(json.dumps({'base':info,'clasificacion':c,'clustering':k,'entorno':versiones},indent=2,ensure_ascii=False),encoding='utf-8')
+    (args.salida/'versiones_ejecucion.txt').write_text('\n'.join(f'{key}=={value}' for key,value in versiones.items())+'\n',encoding='utf-8')
+    if args.salida.resolve() == (Path(__file__).resolve().parent/'resultados_e3_corregidos'):
+        from actualizar_informe_knn import actualizar
+        actualizar(args.salida.resolve())
     print('FIN. Resultados y figuras en:',args.salida.resolve())
 
 if __name__=='__main__':main()

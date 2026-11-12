@@ -260,3 +260,28 @@ El documento de Evaluación 2 señala la descarga de Kaggle, atribuyendo el orig
 E3 informó 582.823 registros procesados y E2 informó 570.437. No son la misma muestra: las semillas y las reglas de preprocesamiento no coinciden exactamente. E3 conserva diagnósticos faltantes como SIN_REGISTRO; no equivale a ausencia de enfermedad. Los CSV individuales siguen excluidos de Git mediante .gitignore, admitiéndose únicamente tablas agregadas explícitas.
 
 Antes de entregar: ejecutar python -m py_compile eva3.py c45_arbol.py y contrastar imágenes, CSV de métricas, metadatos_ejecucion.json y texto del HTML con la ejecución real.
+
+### K-NN reproducible y sincronización del informe
+
+`knn_estable.py` conserva la distancia euclidiana y la ponderación inversa a la
+distancia. Ordena por distancia cuadrada redondeada a 12 decimales y, ante empate,
+por el ID posicional de la fila de la muestra antes de la partición. El ID no es
+el código del paciente ni se elige por la etiqueta. Si hay distancias cero, solo
+esos vecinos votan; un empate de voto se resuelve por la primera clase en orden.
+La tolerancia de 12 decimales es parte explícita de esta variante.
+
+Se vuelven a evaluar k = 5, 11 y 21 en validación interna, sin consultar prueba.
+La ejecución publicada selecciona k = 5: Accuracy 80,52%, Recall 11,57%, F1 0,1596
+y ROC-AUC 0,5700. Sustituye las cifras anteriores de K-NN; no debe mezclarse con
+sus capturas antiguas. Los demás modelos conservan sus métricas.
+
+`verificacion_knn.json` registra una comprobación en los 6.000 casos reales:
+las probabilidades son idénticas al permutar el entrenamiento conservando los ID
+y cambiar el tamaño de lote de 128 a 83. Las versiones se registran en
+`metadatos_ejecucion.json` y `versiones_ejecucion.txt`; no se garantiza identidad
+entre entornos arbitrarios sin controlar dependencias y datos.
+
+Con la salida predeterminada, `python eva3.py` actualiza también las cifras de
+K-NN en `informe_ev_3.html`. Para sincronizar sin reentrenar, ejecutar
+`python actualizar_informe_knn.py` sobre las salidas completas existentes.
+Las pruebas se ejecutan con `python -m unittest discover -s tests -v`.

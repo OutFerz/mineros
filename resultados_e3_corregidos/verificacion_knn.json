@@ -1,0 +1,21 @@
+{
+  "casos_prueba": 6000,
+  "predicciones_distintas_al_permutar_entrenamiento": 0,
+  "probabilidades_identicas": true,
+  "lotes_comparados": [
+    128,
+    83
+  ],
+  "matriz_confusion": [
+    [
+      4720,
+      321
+    ],
+    [
+      848,
+      111
+    ]
+  ],
+  "accuracy": 0.8051666666666667,
+  "n_neighbors": 5
+}

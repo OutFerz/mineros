@@ -14,6 +14,12 @@
     "prueba": 6000,
     "k_elegido": 5,
     "tasa_positivos": 0.15983333333333333,
+    "knn_desempate": {
+      "orden": "distancia_euclidiana_cuadrada_redondeada_y_id_fila_pre_split",
+      "decimales_distancia_cuadrada": 12,
+      "ponderacion": "inversa_distancia; solo ceros si existen",
+      "empate_voto": "primera clase en orden"
+    },
     "c45_validacion": {
       "poda": false,
       "umbral": 0.2,
@@ -69,12 +75,12 @@
       },
       {
         "modelo": "KNN",
-        "accuracy": 0.8035,
-        "balanced_accuracy": 0.5246198068435285,
-        "precision_1": 0.25,
-        "recall_1": 0.11470281543274244,
-        "f1_1": 0.15725518227305219,
-        "roc_auc": 0.581154760370592
+        "accuracy": 0.8051666666666667,
+        "balanced_accuracy": 0.5260338633011186,
+        "precision_1": 0.2569444444444444,
+        "recall_1": 0.11574556830031282,
+        "f1_1": 0.15959741193386054,
+        "roc_auc": 0.5699648699227338
       },
       {
         "modelo": "Logistica",
@@ -90,7 +96,7 @@
   "clustering": {
     "muestra": 20000,
     "k_elegido": 2,
-    "silueta": 0.3224760073707361,
+    "silueta": 0.32247600736977083,
     "perfiles": [
       {
         "CLUSTER_E3": 0,
@@ -109,5 +115,13 @@
         "dias_hosp_media": 0.892516100377526
       }
     ]
+  },
+  "entorno": {
+    "python": "3.13.4",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "scipy": "1.18.1",
+    "scikit_learn": "1.9.1",
+    "matplotlib": "3.11.2"
   }
 }

@@ -12,7 +12,7 @@ Referencia: Accuracy=0.8402; Accuracy balanceada=0.5000; Precision=0.0000; Recal
 CART: Accuracy=0.5802; Accuracy balanceada=0.6378; Precision=0.2352; Recall=0.7226; F1=0.3549; ROC-AUC=0.6794.
 Arbol_entropia: Accuracy=0.5802; Accuracy balanceada=0.6378; Precision=0.2352; Recall=0.7226; F1=0.3549; ROC-AUC=0.6794.
 C45: Accuracy=0.7162; Accuracy balanceada=0.6018; Precision=0.2640; Recall=0.4338; F1=0.3282; ROC-AUC=0.6628.
-KNN: Accuracy=0.8035; Accuracy balanceada=0.5246; Precision=0.2500; Recall=0.1147; F1=0.1573; ROC-AUC=0.5812.
+KNN: Accuracy=0.8052; Accuracy balanceada=0.5260; Precision=0.2569; Recall=0.1157; F1=0.1596; ROC-AUC=0.5700.
 Logistica: Accuracy=0.6197; Accuracy balanceada=0.6318; Precision=0.2425; Recall=0.6496; F1=0.3532; ROC-AUC=0.6726.
 
 CLUSTERING - muestra 20,000; K-Means k=2; silueta aproximada (submuestra)=0.3225.

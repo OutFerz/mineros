@@ -512,34 +512,18 @@
 
     <p>El pipeline utilizó ponderación por el inverso de la distancia (<code>weights='distance'</code>), donde el peso de voto asignado al vecino <math><mi>i</mi></math> es <math><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><mn>1</mn><mo>/</mo><mi>d</mi><mo>(</mo><mi>x</mi><mo>,</mo><msup><mi>x</mi><mrow><mo>(</mo><mi>i</mi><mo>)</mo></mrow></msup><mo>)</mo></math>.</p>
 
-    <h3>3.1. Estandarización y calibración de <math><mi>k</mi></math> en validación</h3>
-    <p>Dado que K-NN depende de distancias geométricas, las variables numéricas fueron estandarizadas con <code>StandardScaler</code> y las categóricas codificadas con <code>OneHotEncoder</code> dentro del pipeline. La selección del número de vecinos se evaluó para <math><mi>k</mi><mo>&isin;</mo><mo>{</mo><mn>5</mn><mo>,</mo><mn>11</mn><mo>,</mo><mn>21</mn><mo>}</mo></math> exclusivamente en la partición de validación interna de 4.800 registros:</p>
-
-    <figure>
-        <img src="resultados_e3_corregidos/seleccion_k.png" alt="Curva de selección del número de vecinos k en validación.">
-        <figcaption><strong>Figura 3.1:</strong> Evaluación de <math><mi>k</mi></math> en la partición de validación interna. El criterio fue maximizar el F1-score de la clase positiva, seleccionándose <math><mi>k</mi><mo>=</mo><mn>5</mn></math> con un F1 de 0,1508 (frente a 0,1309 en <math><mi>k</mi><mo>=</mo><mn>11</mn></math> y 0,1234 en <math><mi>k</mi><mo>=</mo><mn>21</mn></math>).</figcaption>
-    </figure>
-
-    <h3>3.2. Evaluación en prueba y análisis del desequilibrio de clases</h3>
-    <p>Evaluado con <math><mi>k</mi><mo>=</mo><mn>5</mn></math> sobre los 6.000 registros de prueba independiente, K-NN arrojó la siguiente matriz:</p>
-
-    <figure>
-        <img src="resultados_e3_corregidos/confusion_knn.png" alt="Matriz de confusión de K-NN con k=5.">
-        <figcaption><strong>Figura 3.2:</strong> Matriz de confusión de K-NN (<math><mi>k</mi><mo>=</mo><mn>5</mn></math>) en el conjunto de prueba independiente (6.000 registros).</figcaption>
-    </figure>
-
-    <p>El desglose categórico revela:</p>
-    <ul>
-        <li><strong>Verdaderos Negativos (TN = 4.711):</strong> Alta especificidad (93,45%) al concentrar las predicciones en la clase mayoritaria.</li>
-        <li><strong>Falsos Positivos (FP = 330):</strong> Bajo volumen de falsas alarmas.</li>
-        <li><strong>Falsos Negativos (FN = 849):</strong> Omisión del 88,53% de los registros positivos observados.</li>
-        <li><strong>Verdaderos Positivos (TP = 110):</strong> Identificación de solo 110 de los 959 registros con &ge; 2 atenciones.</li>
-    </ul>
-
-    <div class="alert-box">
-        <strong>Interpretación Crítica de la Tasa de Aciertos (Accuracy) en K-NN:</strong><br>
-        A pesar de reportar un <strong>Accuracy global de 80,35%</strong>, este resultado es inferior al clasificador basal trivial (Referencia = 84,02%), el cual clasifica todos los casos como negativos sin aprendizaje. Su <strong>Recall es de apenas 11,47%</strong>, su <strong>F1-score es de 0,1573</strong> y su <strong>Balanced Accuracy es de 52,46%</strong>. En un espacio multidimensional con atributos dummy dispersos, la vecindad euclidiana queda dominada por la clase negativa mayoritaria (84%), haciendo que K-NN resulte inadecuado para identificar los casos de utilización frecuente en este escenario.
-    </div>
+<h3>3.1. Estandarización, desempate reproducible y selección de k</h3>
+<p>La edad se estandariza y las categorías se codifican dentro del pipeline. K-NN mantiene ponderación inversa a la distancia. Para resolver vecinos equidistantes, se ordena por distancia euclidiana cuadrada redondeada a 12 decimales y luego por el identificador de fila de la muestra anterior a la partición. El desempate no utiliza la clase. Si existen vecinos a distancia cero, solo ellos votan; en empate de voto se elige la primera clase en orden. La tolerancia numérica forma parte del procedimiento documentado.</p>
+<p>Se compararon k = 5, 11 y 21 exclusivamente en los 4.800 registros de validación interna. Se seleccionó <math><mi>k</mi><mo>=</mo><mn>5</mn></math> por F1 de la clase positiva: k=5: 0,1520; k=11: 0,1287; k=21: 0,1222. No se usó el conjunto de prueba para esta decisión.</p>
+<figure><img src="resultados_e3_corregidos/seleccion_k.png" alt="Selección de k con desempate estable en validación"><figcaption><strong>Figura 3.1:</strong> Selección del número de vecinos mediante validación interna.</figcaption></figure>
+<h3>3.2. Prueba independiente y desequilibrio de clases</h3>
+<p>Con <math><mi>k</mi><mo>=</mo><mn>5</mn></math>, los 6.000 casos de prueba producen los siguientes resultados.</p>
+<figure><img src="resultados_e3_corregidos/confusion_knn.png" alt="Matriz de confusión KNN estable con k=5"><figcaption><strong>Figura 3.2:</strong> Matriz de confusión de KNN con desempate estable.</figcaption></figure>
+<ul><li><strong>Verdaderos negativos:</strong> 4,720; especificidad 93,63%.</li>
+<li><strong>Falsos positivos:</strong> 321.</li>
+<li><strong>Falsos negativos:</strong> 848; omisión del 88,43% de los positivos.</li>
+<li><strong>Verdaderos positivos:</strong> 111 de 959 casos con al menos dos atenciones.</li></ul>
+<p><strong>Interpretación:</strong> Accuracy = 80,52%, Balanced Accuracy = 52,60%, precisión positiva = 25,69%, recall = 11,57%, F1 = 0,1596 y ROC-AUC = 0,5700. La accuracy sigue por debajo del clasificador de referencia (84,02%) y la sensibilidad es baja. Esta ejecución sustituye las métricas anteriores obtenidas sin una regla explícita de desempate; no se eligió para maximizar el resultado en prueba.</p>
 
     <!-- 4. REGRESIÓN LOGÍSTICA -->
     <h2 id="seccion4">4. Modelo de Clasificación con Regresión Logística</h2>
@@ -726,15 +710,7 @@
                 <td>0,3282</td>
                 <td>0,6628</td>
             </tr>
-            <tr>
-                <td>K-Nearest Neighbors (k=5)</td>
-                <td>0,8035</td>
-                <td>0,5246</td>
-                <td>0,2500</td>
-                <td>0,1147</td>
-                <td>0,1573</td>
-                <td>0,5812</td>
-            </tr>
+            <tr><td>K-Nearest Neighbors (k=5)</td><td>0,8052</td><td>0,5260</td><td>0,2569</td><td>0,1157</td><td>0,1596</td><td>0,5700</td></tr>
             <tr style="background-color: #fafff8;">
                 <td>Regresión Logística</td>
                 <td>0,6197</td>
@@ -754,7 +730,7 @@
 
     <figure>
         <img src="resultados_e3_corregidos/curvas_roc.png" alt="Curvas ROC comparativas en el conjunto de prueba.">
-        <figcaption><strong>Figura 5.2:</strong> Curvas ROC en el conjunto de prueba. CART y el árbol de entropía (AUC = 0,679) y Regresión Logística (AUC = 0,673) exhiben un comportamiento similar; C4.5 alcanza AUC = 0,663 y supera a K-NN (AUC = 0,581) y la diagonal de azar puro (AUC = 0,500).</figcaption>
+        <figcaption><strong>Figura 5.2:</strong> Curvas ROC en el conjunto de prueba. CART y el árbol de entropía (AUC = 0,679) y Regresión Logística (AUC = 0,673) exhiben un comportamiento similar; C4.5 alcanza AUC = 0,663 y supera a K-NN (AUC = 0,570) y la diagonal de azar puro (AUC = 0,500).</figcaption>
     </figure>
 
     <h3>5.1. Matriz de confusión basal del modelo de Referencia</h3>
@@ -771,7 +747,7 @@
         <li><strong>Falso Negativo (FN):</strong> Un registro con dos o más atenciones que el modelo cataloga como baja utilización. En un marco de gestión, esto representa una omisión en la identificación de afiliados con interacción frecuente en el sistema. No implica necesariamente que el paciente quede sin atención médica, ya que la atención depende del acceso efectivo y la consulta clínica real.</li>
         <li><strong>Falso Positivo (FP):</strong> Un registro con menos de dos atenciones clasificado como frecuente. En términos de procesos, puede originar revisiones de registros o asignación de seguimiento a casos que no presentaron dicha recurrencia.</li>
     </ul>
-    <p>Bajo una ponderación que priorice la identificación de registros con atenciones observadas recurrentes, <strong>CART alcanza la mayor sensibilidad (Recall = 72,26%)</strong>, detectando 693 de los 959 casos positivos, aunque a expensas de generar 2.253 falsos positivos (clasificando como positivos al 49,1% de los registros de prueba). La <strong>Regresión Logística</strong> ofrece una alternativa intermedia (Recall = 64,96% con menor tasa de falsos positivos, FP = 1.946). C4.5 identifica 43,38% de los positivos, con mayor exactitud global pero menor sensibilidad que CART. K-NN muestra una sensibilidad marcadamente insuficiente (11,47%) para este objetivo.</p>
+    <p>Bajo una ponderación que priorice la identificación de registros con atenciones observadas recurrentes, <strong>CART alcanza la mayor sensibilidad (Recall = 72,26%)</strong>, detectando 693 de los 959 casos positivos, aunque a expensas de generar 2.253 falsos positivos (clasificando como positivos al 49,1% de los registros de prueba). La <strong>Regresión Logística</strong> ofrece una alternativa intermedia (Recall = 64,96% con menor tasa de falsos positivos, FP = 1.946). C4.5 identifica 43,38% de los positivos, con mayor exactitud global pero menor sensibilidad que CART. K-NN muestra una sensibilidad baja (11,57%) para este objetivo.</p>
 
     <div class="alert-box">
         <strong>Definición del Coeficiente ROC-AUC:</strong><br>
@@ -979,7 +955,7 @@
     <ul>
         <li><strong>Árboles de Decisión (CART y criterio de entropía):</strong> Resultaron ser los modelos con mayor sensibilidad para detectar la clase positiva observada, alcanzando un <strong>Recall de 72,26%</strong>, Balanced Accuracy de 63,78% y ROC-AUC de 0,6794. Sin embargo, su precisión es de 23,52%, asignando la clase positiva al 49,1% de los registros de prueba (2.946 de 6.000).</li>
         <li><strong>C4.5 (Gain Ratio):</strong> La implementación académica generó un árbol de 63 nodos sin poda y con umbral 0,20, seleccionado mediante validación independiente. En prueba alcanzó Accuracy de 71,62%, Recall de 43,38%, F1 de 0,3282 y ROC-AUC de 0,6628. Ofrece mayor exactitud que CART, pero menos sensibilidad y F1 de la clase positiva.</li>
-        <li><strong>K-Nearest Neighbors (K-NN):</strong> Aunque reporta un Accuracy de 80,35%, sufre una pérdida severa de sensibilidad en este contexto desbalanceado (<strong>Recall de 11,47%</strong> y F1 de 0,1573), con Balanced Accuracy de 52,46%, muy próximo al azar; su F1 positivo queda por debajo de CART, C4.5 y Logística.</li>
+        <li><strong>K-Nearest Neighbors (K-NN):</strong> Con desempate estable y k=5, obtuvo Accuracy de 80,52%, Recall de 11,57%, F1 de 0,1596 y ROC-AUC de 0,5700. Su sensibilidad sigue siendo inferior a CART, C4.5 y regresión logística en esta prueba.</li>
         <li><strong>Regresión Logística:</strong> Proporciona un desempeño equilibrado con <strong>Recall de 64,96%</strong>, Accuracy de 61,97% y ROC-AUC de 0,6726, permitiendo analizar coeficientes condicionales en escala log-odds.</li>
         <li><strong>Segmentación K-Means:</strong> Identifica exploratoriamente dos perfiles (<math><mi>k</mi><mo>=</mo><mn>2</mn></math>, silueta = 0,3225, separación moderada), diferenciando registros de baja actividad asistencial de aquellos con utilización y costos observados considerables.</li>
         <li><strong>Visualizaciones 2D:</strong> La proyección PCA y la dispersión con jitter ilustran que la población se distribuye de forma continua y que K-Means operó en el espacio multivariado global.</li>
