@@ -33,11 +33,14 @@ class C45Classifier(ClassifierMixin, BaseEstimator):
     """
 
     def __init__(self, max_depth=6, min_samples_leaf=100,
-                 confidence_factor=0.25, min_gain=1e-8):
+                 confidence_factor=0.25, min_gain=1e-8, prune=True,
+                 threshold=0.5):
         self.max_depth = max_depth
         self.min_samples_leaf = min_samples_leaf
         self.confidence_factor = confidence_factor
         self.min_gain = min_gain
+        self.prune = prune
+        self.threshold = threshold
 
     @staticmethod
     def _entropia(p, n):
@@ -75,9 +78,16 @@ class C45Classifier(ClassifierMixin, BaseEstimator):
             splitinfo = self._entropia(n1, n)
             ratios = np.divide(ganancias, splitinfo,
                                out=np.zeros_like(ganancias), where=splitinfo > 0)
-            ix = int(np.argmax(ganancias))
-            if ganancias[ix] <= self.min_gain:
+            # C4.5 selecciona umbrales por gain ratio, pero descarta
+            # cortes con una ganancia inferior a la media de cortes útiles.
+            # Maximizar solo ganancia absoluta no representa ese criterio.
+            validas = ganancias > self.min_gain
+            if not np.any(validas):
                 return None
+            ganancia_min = max(self.min_gain, float(np.mean(ganancias[validas])))
+            elegibles = validas & (ganancias >= ganancia_min - 1e-12)
+            puntajes = np.where(elegibles, ratios, -np.inf)
+            ix = int(np.argmax(puntajes))
             umbral = float((vv[cortes[ix]] + vv[cortes[ix]+1]) / 2)
             mascara = valores <= umbral
             return {"feature": col, "threshold": umbral,
@@ -147,9 +157,18 @@ class C45Classifier(ClassifierMixin, BaseEstimator):
             return costo_hoja
         return costo_subarbol
 
+    @staticmethod
+    def _contar_nodos(nodo):
+        if not nodo.hijos:
+            return 1, 1
+        conteos = [C45Classifier._contar_nodos(h) for h in nodo.hijos.values()]
+        return 1 + sum(a for a, _ in conteos), sum(b for _, b in conteos)
+
     def fit(self, X, y):
         if not 0 < self.confidence_factor < 0.5:
             raise ValueError("confidence_factor debe estar entre 0 y 0.5")
+        if not 0 < self.threshold < 1:
+            raise ValueError('threshold debe estar entre 0 y 1')
         if self.min_samples_leaf < 1 or self.max_depth < 1:
             raise ValueError("max_depth y min_samples_leaf deben ser positivos")
         data = pd.DataFrame(X).copy()
@@ -181,7 +200,13 @@ class C45Classifier(ClassifierMixin, BaseEstimator):
         self.classes_ = np.asarray([0, 1])
         self.root_ = self._construir(
             valores, target, np.arange(len(target)), list(data.columns), 0)
-        self._podar(self.root_)
+        self.unpruned_nodes_, self.unpruned_leaves_ = self._contar_nodos(self.root_)
+        self.root_feature_before_pruning_ = self.root_.atributo
+        if self.prune:
+            self._podar(self.root_)
+        self.nodes_, self.leaves_ = self._contar_nodos(self.root_)
+        self.pruned_nodes_ = self.unpruned_nodes_ - self.nodes_
+        self.decision_threshold_ = float(self.threshold)
         return self
 
     def predict_proba(self, X):
@@ -212,7 +237,7 @@ class C45Classifier(ClassifierMixin, BaseEstimator):
         return resultado
 
     def predict(self, X):
-        return (self.predict_proba(X)[:, 1] >= 0.5).astype(int)
+        return (self.predict_proba(X)[:, 1] >= self.decision_threshold_).astype(int)
 
     def resumen_ramas(self, niveles=2, ramas_por_nodo=4):
         """Resumen textual legible para una evidencia en imagen."""
