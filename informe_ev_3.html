@@ -340,7 +340,7 @@
         <ul>
             <li><a href="#introduccion">Introducción y Alcance Metodológico</a></li>
             <li><a href="#seccion1">1. Preparación, Muestreo y Descripción de los Datos</a></li>
-            <li><a href="#seccion2">2. Árboles de Decisión CART y Árbol con Criterio de Entropía</a> <span class="rubric-pill">[15 pts]</span></li>
+            <li><a href="#seccion2">2. Árboles de Decisión CART, Entropía y C4.5 (implementación incorporada)</a> <span class="rubric-pill">[15 pts]</span></li>
             <li><a href="#seccion3">3. Clasificación mediante K-Nearest Neighbors (K-NN)</a> <span class="rubric-pill">[15 pts]</span></li>
             <li><a href="#seccion4">4. Modelo de Clasificación con Regresión Logística</a> <span class="rubric-pill">[15 pts]</span></li>
             <li><a href="#seccion5">5. Comparación Integral de Modelos de Clasificación</a></li>
@@ -419,7 +419,7 @@
         </math>
     </div>
 
-    <p>Es importante señalar que este segundo modelo constituye una aproximación orientada a la ganancia de información de Shannon y no representa una implementación integral de C4.5, ya que no incorpora mecanismos específicos de este último como la razón de ganancia (<em>gain ratio</em>) ni sus heurísticas particulares de poda y tratamiento de atributos continuos.</p>
+    <p>El árbol con entropía mostrado en las evidencias existentes es un modelo de referencia, no una implementación de C4.5. El repositorio incorpora ahora un modelo independiente <code>C45Classifier</code> en <code>c45_arbol.py</code>, con selección mediante razón de ganancia (<em>gain ratio</em>), umbrales numéricos, categorías multirrama y poda pesimista aproximada. No equivale exactamente al ejecutable histórico de Quinlan ni incluye conversión a reglas. <strong>Sus métricas y capturas sobre el dataset SIS están pendientes de regeneración con el CSV original</strong>; las cifras de esta sección corresponden exclusivamente a los modelos previamente ejecutados.</p>
 
     <h3>2.1. Configuración, regularización y ponderación de clases</h3>
     <p>Para controlar la complejidad y prevenir el sobreajuste, se restringió la profundidad a <code>max_depth=6</code> y se estableció un tamaño mínimo de hoja de <code>min_samples_leaf=100</code>. Para mitigar el desbalance entre clases (84% negativos vs 16% positivos), se aplicó el esquema <code>class_weight='balanced'</code>, que asigna pesos inversamente proporcionales a las frecuencias muestrales:</p>
@@ -477,8 +477,10 @@
 
     <figure>
         <img src="resultados_e3_corregidos/confusion_arbol_entropia.png" alt="Matriz de confusión del árbol de decisión con criterio de entropía.">
-        <figcaption><strong>Figura 2.4:</strong> Matriz de confusión del árbol con criterio de entropía (referencia comparativa). Arroja resultados idénticos a CART, confirmando la convergencia de particiones bajo ambos criterios de impureza en esta configuración.</figcaption>
+        <figcaption><strong>Figura 2.4:</strong> Matriz de confusión del árbol con criterio de entropía (referencia comparativa). Presenta métricas agregadas idénticas a CART en esta ejecución; ello no demuestra que ambos árboles tengan divisiones internas iguales.</figcaption>
     </figure>
+
+    <p><strong>Estado de C4.5:</strong> el script <code>eva3.py</code> ya incluye el entrenamiento, la evaluación en prueba y el guardado de <code>confusion_c45.png</code>, <code>arbol_C45.png</code> y <code>arbol_C45_resumen.txt</code>. Esas evidencias no se incluyen en esta versión estática hasta ejecutar el pipeline con el CSV real. Para evitar atribuciones erróneas, no se reportan resultados numéricos de C4.5 todavía.</p>
 
     <p>Las métricas obtenidas sitúan el <strong>Accuracy en 58,02%</strong>, la <strong>Balanced Accuracy en 63,78%</strong>, el <strong>Recall en 72,26%</strong>, la <strong>Precisión en 23,52%</strong>, el <strong>F1-score en 0,3549</strong> y el <strong>ROC-AUC en 0,6794</strong>. La variante con criterio de entropía reproduce idénticos guarismos.</p>
 
@@ -844,6 +846,8 @@
         </tbody>
     </table>
 
+    <p><strong>Alcance del resultado:</strong> una silueta de 0,3225 indica una separación geométrica moderada y cierto solapamiento entre grupos. No demuestra perfiles clínicos independientes ni valida por sí sola su utilidad operativa.</p>
+
     <h3>6.3. Perfiles de los clusters identificados (<math><mi>k</mi><mo>=</mo><mn>2</mn></math>)</h3>
     <p>Para facilitar la comprensión descriptiva, las medias se reconvirtieron a las <strong>escalas originales</strong> (aplicando <code>expm1</code>):</p>
 
@@ -956,7 +960,7 @@
         <li><strong>Árboles de Decisión (CART y criterio de entropía):</strong> Resultaron ser los modelos con mayor sensibilidad para detectar la clase positiva observada, alcanzando un <strong>Recall de 72,26%</strong>, Balanced Accuracy de 63,78% y ROC-AUC de 0,6794. Sin embargo, su precisión es de 23,52%, asignando la clase positiva al 49,1% de los registros de prueba (2.946 de 6.000).</li>
         <li><strong>K-Nearest Neighbors (K-NN):</strong> Aunque reporta un Accuracy de 80,72%, sufre una pérdida severa de sensibilidad en este contexto desbalanceado (<strong>Recall de 11,05%</strong> y F1 de 0,1549), siendo inferior al baseline de referencia en capacidad de discriminación balanceada (52,51%).</li>
         <li><strong>Regresión Logística:</strong> Proporciona un desempeño equilibrado con <strong>Recall de 64,96%</strong>, Accuracy de 61,97% y ROC-AUC de 0,6726, permitiendo analizar coeficientes condicionales en escala log-odds.</li>
-        <li><strong>Segmentación K-Means:</strong> Delimita de forma consistente dos perfiles (<math><mi>k</mi><mo>=</mo><mn>2</mn></math>, silueta = 0,3225), diferenciando registros de baja actividad asistencial de aquellos con utilización y costos observados considerables.</li>
+        <li><strong>Segmentación K-Means:</strong> Identifica exploratoriamente dos perfiles (<math><mi>k</mi><mo>=</mo><mn>2</mn></math>, silueta = 0,3225, separación moderada), diferenciando registros de baja actividad asistencial de aquellos con utilización y costos observados considerables.</li>
         <li><strong>Visualizaciones 2D:</strong> La proyección PCA y la dispersión con jitter ilustran que la población se distribuye de forma continua y que K-Means operó en el espacio multivariado global.</li>
     </ul>
 
@@ -971,7 +975,7 @@
     <!-- 10. REFERENCIAS -->
     <h2 id="referencias">10. Referencias Bibliográficas y Trazabilidad de Datos</h2>
     <ol>
-        <li><strong>Seguro Integral de Salud (SIS).</strong> <em>Afiliados activos en el Seguro Integral de Salud con diagnóstico de Diabetes Mellitus.</em> Plataforma Nacional de Datos Abiertos del Perú. Registro maestro original de 1.735.940 filas analizado localmente con fecha de corte de serie 2024. URL: <a href="https://www.datosabiertos.gob.pe/" target="_blank" rel="noopener noreferrer">https://www.datosabiertos.gob.pe/</a>.</li>
+        <li><strong>Seguro Integral de Salud (SIS).</strong> <em>Afiliados activos en el Seguro Integral de Salud con diagnóstico de Diabetes Mellitus.</em> Origen institucional atribuido al SIS de Perú; el informe anterior indica descarga a través de Kaggle. La URL exacta del conjunto de Kaggle, la versión del archivo y su correspondencia con la publicación oficial deben verificarse antes de la entrega. Registro maestro local de 1.735.940 filas. URL: <a href="https://www.datosabiertos.gob.pe/" target="_blank" rel="noopener noreferrer">https://www.datosabiertos.gob.pe/</a>.</li>
         <li><strong>Breiman, L., Friedman, J., Stone, C. J., & Olshen, R. A. (1984).</strong> <em>Classification and Regression Trees.</em> CRC Press / Chapman & Hall.</li>
         <li><strong>Quinlan, J. R. (1993).</strong> <em>C4.5: Programs for Machine Learning.</em> Morgan Kaufmann Publishers.</li>
         <li><strong>Rousseeuw, P. J. (1987).</strong> <em>Silhouettes: A graphical aid to the interpretation and validation of cluster analysis.</em> Journal of Computational and Applied Mathematics, 20, 53-65.</li>
