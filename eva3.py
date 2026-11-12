@@ -1,8 +1,8 @@
 """Evaluación 3: Minería de datos - afiliados SIS con diabetes.
 
 Uso:
-    python analisis_evaluacion3.py --csv "Afiliados_activos_DM_SIS.csv"
-    python analisis_evaluacion3.py --csv "archivo.csv" --salida resultados --n-clas 30000 --n-cluster 20000
+    python eva3.py
+    python eva3.py --csv "archivo.csv" --salida resultados --n-clas 30000 --n-cluster 20000
 
 No incluye el CSV. Los resultados solo son válidos tras la ejecución con los datos auténticos.
 """
@@ -356,7 +356,7 @@ def reporte_texto(info,c,k,salida):
 
 def main():
     arg=argparse.ArgumentParser()
-    arg.add_argument('--csv',required=True,type=Path,help='CSV original de la Evaluación 2')
+    arg.add_argument('--csv',type=Path,default=Path(__file__).resolve().parent / 'Afiliados_activos_DM_SIS.csv',help='CSV original; por defecto Afiliados_activos_DM_SIS.csv junto al script')
     arg.add_argument('--salida',type=Path,default=Path('resultados_e3'))
     arg.add_argument('--n-base',type=int,default=650000)
     arg.add_argument('--n-clas',type=int,default=30000)
