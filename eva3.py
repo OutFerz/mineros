@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import textwrap
 import unicodedata
 from pathlib import Path
 
@@ -173,6 +174,43 @@ def evaluar(nombre,pipe,Xtr,ytr,Xte,yte,salida):
     return pipe,d,roc_curve(yte,proba)
 
 
+def graficar_cart(tree, features, salida):
+    """Vista legible con códigos de variables y leyenda de nombres completos."""
+    codigos = [f'V{i+1:02d}' for i in range(len(features))]
+    fig = plt.figure(figsize=(28, 13))
+    ax = fig.add_axes([.02, .32, .96, .58])
+    nodos = plot_tree(tree, max_depth=3, feature_names=codigos,
+                     class_names=['<2', '>=2'], filled=True, rounded=True,
+                     fontsize=9, precision=2, ax=ax)
+    fig.suptitle('CART — vista parcial hasta profundidad 3 (raíz + tres niveles)', fontsize=20, y=.975)
+    fig.text(.5, .935, 'Clase: número de atenciones · EDAD estandarizada · indicadores categóricos 0/1 · (…) indica ramas no mostradas',
+             ha='center', fontsize=12)
+    visibles = set()
+    def visitar(node, depth):
+        feature = tree.tree_.feature[node]
+        if feature < 0 or depth > 3:
+            return
+        visibles.add(feature)
+        visitar(tree.tree_.children_left[node], depth+1)
+        visitar(tree.tree_.children_right[node], depth+1)
+    visitar(0, 0)
+    lineas = [textwrap.fill(f'{codigos[i]} = {features[i]}', width=65, subsequent_indent='      ')
+              for i in sorted(visibles)]
+    mitad = (len(lineas)+1)//2
+    fig.text(.03, .265, 'Variables utilizadas en la vista (nombres del preprocesamiento):', fontsize=12, weight='bold')
+    for x, bloque in [(.03, lineas[:mitad]), (.51, lineas[mitad:])]:
+        fig.text(x, .235, '\n'.join(bloque), va='top', fontsize=10, family='monospace', linespacing=1.5)
+    fig.text(.03, .025, 'samples: registros del nodo · value: conteos ponderados por class_weight, no pacientes únicos · gini: impureza del nodo.', fontsize=11)
+    fig.savefig(salida/'arbol_CART.png', dpi=180, bbox_inches='tight')
+    # Facilita verificar que las cajas no se pisan sin modificar el árbol ajustado.
+    fig.canvas.draw()
+    cajas = [n.get_bbox_patch().get_window_extent(fig.canvas.get_renderer())
+             for n in nodos if n.get_bbox_patch() is not None]
+    solapamientos = sum(a.overlaps(b) for i,a in enumerate(cajas) for b in cajas[i+1:])
+    plt.close(fig)
+    return solapamientos
+
+
 def clasificacion(df,salida,n):
     d=muestrear_estratificado(df,n,'ATENCIONES_FRECUENTES_E3')
     X=d[FEATURES]
@@ -227,11 +265,7 @@ def clasificacion(df,salida,n):
     # Árbol CART (vista solo de los primeros tres niveles) y variables destacadas
     arb=fitted['CART'];feat=arb.named_steps['preparar'].get_feature_names_out()
     tree=arb.named_steps['modelo']
-    fig,ax=plt.subplots(figsize=(17,9))
-    plot_tree(tree,max_depth=3,feature_names=list(feat),class_names=['<2','>=2'],
-              filled=True,rounded=True,fontsize=8,ax=ax)
-    ax.set_title('CART (representación parcial: 3 primeros niveles)')
-    guardar_fig(salida/'arbol_CART.png')
+    graficar_cart(tree, feat, salida)
     importancias=pd.Series(tree.feature_importances_,index=feat).sort_values(ascending=False).head(12)
     fig,ax=plt.subplots(figsize=(9,5))
     importancias.sort_values().plot(kind='barh',ax=ax)
