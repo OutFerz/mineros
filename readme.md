@@ -251,7 +251,7 @@ Para clasificación se utiliza una submuestra estratificada de 30.000 registros,
 
 La segmentación K-Means se realiza con 20.000 filas y produce dos gráficos 2D: proyección PCA y Edad versus Atenciones. El coeficiente de silueta publicado (0,3225) señala una separación moderada, no evidencia de perfiles clínicos validados.
 
-La nueva ejecución creará una fila C45 en metricas_clasificacion.csv, la captura confusion_c45.png, el resumen arbol_C45_resumen.txt y el gráfico arbol_C45.png; los archivos actualmente versionados **preceden** a C4.5 y no deben presentarse como resultados de ese algoritmo. El HTML preserva los resultados históricos y explicita esta limitación.
+La ejecución verificada de la Evaluación 3 generó la fila C45 en metricas_clasificacion.csv, los archivos confusion_c45.png, arbol_C45_resumen.txt y arbol_C45.png y los diagnósticos diagnostico_c45.json y estado_c45.json. Todos están versionados en resultados_e3_corregidos y el HTML se sincronizó con estos resultados. Para C4.5, la validación eligió ejecución sin poda y umbral 0,20; en prueba independiente obtuvo F1=0,3282, Recall=0,4338 y ROC-AUC=0,6628. Los resultados de prueba no se usaron para seleccionar el umbral.
 
 ### Fuente, consistencia y privacidad
 
