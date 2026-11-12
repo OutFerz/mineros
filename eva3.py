@@ -34,6 +34,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.tree import DecisionTreeClassifier, plot_tree
+from c45_arbol import C45Classifier
 
 SEED = 42
 REQ = ['EDAD','SEXO','DEPARTAMENTO','TIPO_DIABETES','CON_DX_OBESIDAD',
@@ -238,16 +239,30 @@ def clasificacion(df,salida,n):
         # No debe denominarse C4.5 completo porque scikit-learn no usa gain ratio.
         'Arbol_entropia':DecisionTreeClassifier(criterion='entropy',max_depth=6,min_samples_leaf=100,
                                       class_weight='balanced',random_state=SEED),
+        'C45':C45Classifier(max_depth=6,min_samples_leaf=100,confidence_factor=0.25),
         'KNN':KNeighborsClassifier(n_neighbors=k,weights='distance',n_jobs=-1),
         'Logistica':LogisticRegression(max_iter=2000,class_weight='balanced',solver='lbfgs',random_state=SEED),
     }
     resumen=[]; rocs={}; fitted={}
     for nombre,modelo in modelos.items():
-        p=Pipeline([('preparar',preprocess()),('modelo',modelo)])
+        # C4.5 recibe categorías originales: no convertirlas a dummies.
+        # Esto conserva ramificación multirrama y selección por gain ratio.
+        p=(modelo if nombre == 'C45' else
+           Pipeline([('preparar',preprocess()),('modelo',modelo)]))
         p,met,roc=evaluar(nombre,p,Xtr,ytr,Xte,yte,salida)
         fitted[nombre]=p;resumen.append(met);rocs[nombre]=roc
     tabla=pd.DataFrame(resumen)
     tabla.to_csv(salida/'metricas_clasificacion.csv',index=False)
+    # Evidencia C4.5 solo se genera al entrenar con el CSV auténtico.
+    texto=fitted['C45'].resumen_ramas(niveles=3,ramas_por_nodo=3)
+    (salida/'arbol_C45_resumen.txt').write_text(texto,encoding='utf-8')
+    fig,ax=plt.subplots(figsize=(12,7))
+    ax.axis('off')
+    ax.text(.025,.975,'C4.5: divisiones por gain ratio (resumen de ramas)',
+            transform=ax.transAxes,va='top',fontsize=14,weight='bold')
+    ax.text(.025,.90,texto,transform=ax.transAxes,va='top',fontsize=9,
+            family='monospace',linespacing=1.25)
+    guardar_fig(salida/'arbol_C45.png')
     fig,ax=plt.subplots(figsize=(9,5))
     tab=tabla.set_index('modelo')[['f1_1','recall_1','roc_auc']]
     tab.plot(kind='bar',ax=ax,rot=0)
@@ -391,7 +406,7 @@ def reporte_texto(info,c,k,salida):
 def main():
     arg=argparse.ArgumentParser()
     arg.add_argument('--csv',type=Path,default=Path(__file__).resolve().parent / 'Afiliados_activos_DM_SIS.csv',help='CSV original; por defecto Afiliados_activos_DM_SIS.csv junto al script')
-    arg.add_argument('--salida',type=Path,default=Path('resultados_e3'))
+    arg.add_argument('--salida',type=Path,default=Path('resultados_e3_corregidos'))
     arg.add_argument('--n-base',type=int,default=650000)
     arg.add_argument('--n-clas',type=int,default=30000)
     arg.add_argument('--n-cluster',type=int,default=20000)
