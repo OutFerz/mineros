@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 800" role="img" aria-labelledby="titulo descripcion">
+<title id="titulo">Árbol C4.5: vista parcial de las primeras divisiones</title>
+<desc id="descripcion">Raíz, dos ramas y cuatro subramas reales del árbol C4.5 final; 63 nodos en total, 24 mil registros de entrenamiento.</desc>
+<rect width="1500" height="800" fill="#fff"/>
+<text x="750" y="58" fill="#233348" font-family="Arial,Helvetica,sans-serif" font-size="38" font-weight="700" text-anchor="middle">Árbol C4.5: primeras divisiones</text>
+<text x="750" y="100" fill="#5b6575" font-family="Arial,Helvetica,sans-serif" font-size="23" text-anchor="middle">Vista parcial · selección por gain ratio · árbol completo de 63 nodos</text>
+<g stroke="#8792a2" stroke-width="3" fill="none">
+<path d="M 750 260 L 370 345"/>
+<path d="M 750 260 L 1130 345"/>
+<path d="M 370 490 L 195 560"/>
+<path d="M 370 490 L 570 560"/>
+<path d="M 1130 490 L 930 560"/>
+<path d="M 1130 490 L 1305 560"/>
+</g>
+<rect x="535" y="130" width="430" height="130" rx="16" fill="#eaf3ff" stroke="#7a8799" stroke-width="2.5"/>
+<text x="750" y="170" text-anchor="middle" font-size="28" font-weight="700" fill="#27364a" font-family="Arial,Helvetica,sans-serif">Raíz: EDAD</text>
+<text x="750" y="209" text-anchor="middle" font-size="23" fill="#27364a" font-family="Arial,Helvetica,sans-serif">n = 24,000 · positivos = 3,836</text>
+<text x="750" y="242" text-anchor="middle" font-size="23" fill="#265d84" font-family="Arial,Helvetica,sans-serif">Proporción positiva: 16.0%</text>
+<rect x="110" y="345" width="520" height="145" rx="16" fill="#f7f9fc" stroke="#7a8799" stroke-width="2.5"/>
+<text x="370" y="385" text-anchor="middle" font-size="28" font-weight="700" fill="#27364a" font-family="Arial,Helvetica,sans-serif">Edad ≤ 30,5 años</text>
+<text x="370" y="424" text-anchor="middle" font-size="23" fill="#27364a" font-family="Arial,Helvetica,sans-serif">n = 1,983 · positivos = 53</text>
+<text x="370" y="457" text-anchor="middle" font-size="23" fill="#265d84" font-family="Arial,Helvetica,sans-serif">Proporción positiva: 2.7%</text>
+<rect x="870" y="345" width="520" height="145" rx="16" fill="#f7f9fc" stroke="#7a8799" stroke-width="2.5"/>
+<text x="1130" y="385" text-anchor="middle" font-size="28" font-weight="700" fill="#27364a" font-family="Arial,Helvetica,sans-serif">Edad &gt; 30,5 años</text>
+<text x="1130" y="424" text-anchor="middle" font-size="23" fill="#27364a" font-family="Arial,Helvetica,sans-serif">n = 22,017 · positivos = 3,783</text>
+<text x="1130" y="457" text-anchor="middle" font-size="23" fill="#265d84" font-family="Arial,Helvetica,sans-serif">Proporción positiva: 17.2%</text>
+<rect x="30" y="560" width="330" height="146" rx="16" fill="#f7f9fc" stroke="#7a8799" stroke-width="2.5"/>
+<text x="195" y="600" text-anchor="middle" font-size="24" font-weight="700" fill="#27364a" font-family="Arial,Helvetica,sans-serif">Salud mental: Sí</text>
+<text x="195" y="639" text-anchor="middle" font-size="23" fill="#27364a" font-family="Arial,Helvetica,sans-serif">n = 425 · positivos = 28</text>
+<text x="195" y="672" text-anchor="middle" font-size="23" fill="#265d84" font-family="Arial,Helvetica,sans-serif">Proporción positiva: 6.8%</text>
+<rect x="405" y="560" width="330" height="146" rx="16" fill="#f7f9fc" stroke="#7a8799" stroke-width="2.5"/>
+<text x="570" y="600" text-anchor="middle" font-size="24" font-weight="700" fill="#27364a" font-family="Arial,Helvetica,sans-serif">Salud mental: Sin registro</text>
+<text x="570" y="639" text-anchor="middle" font-size="23" fill="#27364a" font-family="Arial,Helvetica,sans-serif">n = 1,558 · positivos = 25</text>
+<text x="570" y="672" text-anchor="middle" font-size="23" fill="#265d84" font-family="Arial,Helvetica,sans-serif">Proporción positiva: 1.7%</text>
+<rect x="765" y="560" width="330" height="146" rx="16" fill="#f7f9fc" stroke="#7a8799" stroke-width="2.5"/>
+<text x="930" y="600" text-anchor="middle" font-size="24" font-weight="700" fill="#27364a" font-family="Arial,Helvetica,sans-serif">Obesidad: Sí</text>
+<text x="930" y="639" text-anchor="middle" font-size="23" fill="#27364a" font-family="Arial,Helvetica,sans-serif">n = 14,490 · positivos = 3,048</text>
+<text x="930" y="672" text-anchor="middle" font-size="23" fill="#265d84" font-family="Arial,Helvetica,sans-serif">Proporción positiva: 21.0%</text>
+<rect x="1140" y="560" width="330" height="146" rx="16" fill="#f7f9fc" stroke="#7a8799" stroke-width="2.5"/>
+<text x="1305" y="600" text-anchor="middle" font-size="24" font-weight="700" fill="#27364a" font-family="Arial,Helvetica,sans-serif">Obesidad: Sin registro</text>
+<text x="1305" y="639" text-anchor="middle" font-size="23" fill="#27364a" font-family="Arial,Helvetica,sans-serif">n = 7,527 · positivos = 735</text>
+<text x="1305" y="672" text-anchor="middle" font-size="23" fill="#265d84" font-family="Arial,Helvetica,sans-serif">Proporción positiva: 9.8%</text>
+<text x="750" y="744" fill="#495260" font-family="Arial,Helvetica,sans-serif" font-size="22" text-anchor="middle">Las tarjetas muestran proporciones observadas por nodo; no representan la predicción final de cada hoja.</text>
+<text x="750" y="779" fill="#495260" font-family="Arial,Helvetica,sans-serif" font-size="21" text-anchor="middle">Entrenamiento: 24.000 registros · sin poda · umbral de clasificación validado: 0,20</text>
+</svg>
