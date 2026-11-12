@@ -15,3 +15,10 @@ env/
 # Ignorar archivos compilados de Python
 __pycache__/
 *.pyc
+
+# Excepciones: únicamente métricas agregadas, no filas de pacientes
+!resultados_e3_corregidos/metricas_clasificacion.csv
+!resultados_e3_corregidos/seleccion_k.csv
+!resultados_e3_corregidos/seleccion_clusters.csv
+!resultados_e3_corregidos/perfiles_cluster.csv
+!resultados_e3_corregidos/coeficientes_logisticos.csv
