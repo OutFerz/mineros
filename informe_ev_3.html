@@ -340,7 +340,7 @@
         <ul>
             <li><a href="#introduccion">Introducción y Alcance Metodológico</a></li>
             <li><a href="#seccion1">1. Preparación, Muestreo y Descripción de los Datos</a></li>
-            <li><a href="#seccion2">2. Árboles de Decisión CART, Entropía y C4.5 (implementación incorporada)</a> <span class="rubric-pill">[15 pts]</span></li>
+            <li><a href="#seccion2">2. Árboles de Decisión CART, Entropía y C4.5</a> <span class="rubric-pill">[15 pts]</span></li>
             <li><a href="#seccion3">3. Clasificación mediante K-Nearest Neighbors (K-NN)</a> <span class="rubric-pill">[15 pts]</span></li>
             <li><a href="#seccion4">4. Modelo de Clasificación con Regresión Logística</a> <span class="rubric-pill">[15 pts]</span></li>
             <li><a href="#seccion5">5. Comparación Integral de Modelos de Clasificación</a></li>
@@ -393,7 +393,7 @@
     </ul>
 
     <!-- 2. CART Y ENTROPÍA -->
-    <h2 id="seccion2">2. Árboles de Decisión CART y Árbol con Criterio de Entropía</h2>
+    <h2 id="seccion2">2. Árboles de Decisión CART, Entropía y C4.5</h2>
     <p>Los árboles de decisión particionan el espacio de atributos mediante divisiones sucesivas. El algoritmo <strong>CART (Classification and Regression Trees)</strong>, formalizado por Breiman et al. (1984), implementa particiones binarias recursivas minimizando la <strong>Impureza de Gini</strong> en cada nodo descendiente:</p>
 
     <div class="math-block">
@@ -419,10 +419,10 @@
         </math>
     </div>
 
-    <p>El árbol con entropía mostrado en las evidencias existentes es un modelo de referencia, no una implementación de C4.5. El repositorio incorpora ahora un modelo independiente <code>C45Classifier</code> en <code>c45_arbol.py</code>, con selección mediante razón de ganancia (<em>gain ratio</em>), umbrales numéricos, categorías multirrama y poda pesimista aproximada. No equivale exactamente al ejecutable histórico de Quinlan ni incluye conversión a reglas. <strong>Sus métricas y capturas sobre el dataset SIS están pendientes de regeneración con el CSV original</strong>; las cifras de esta sección corresponden exclusivamente a los modelos previamente ejecutados.</p>
+    <p>El árbol con entropía sigue siendo una referencia basada en ganancia de información, <strong>no una implementación de C4.5</strong>. El repositorio implementa por separado <code>C45Classifier</code> en <code>c45_arbol.py</code>, con selección de atributos mediante razón de ganancia (<em>gain ratio</em>), umbrales numéricos, ramas categóricas y poda pesimista aproximada configurable. Se trata de una implementación académica de tipo C4.5 y no de una reproducción íntegra del programa original de Quinlan: no incluye conversión a reglas ni su tratamiento probabilístico completo de datos faltantes. Los resultados de esta sección fueron obtenidos con el CSV original y corresponden a <code>metricas_clasificacion.csv</code> y <code>metadatos_ejecucion.json</code>.</p>
 
     <h3>2.1. Configuración, regularización y ponderación de clases</h3>
-    <p>Para controlar la complejidad y prevenir el sobreajuste, se restringió la profundidad a <code>max_depth=6</code> y se estableció un tamaño mínimo de hoja de <code>min_samples_leaf=100</code>. Para mitigar el desbalance entre clases (84% negativos vs 16% positivos), se aplicó el esquema <code>class_weight='balanced'</code>, que asigna pesos inversamente proporcionales a las frecuencias muestrales:</p>
+    <p>Para controlar la complejidad y prevenir el sobreajuste, se restringió la profundidad a <code>max_depth=6</code> y se estableció un tamaño mínimo de hoja de <code>min_samples_leaf=100</code>. Para CART y el árbol de entropía, frente al desbalance entre clases (84% negativos vs 16% positivos), se aplicó el esquema <code>class_weight='balanced'</code>, que asigna pesos inversamente proporcionales a las frecuencias muestrales:</p>
 
     <div class="math-block">
         <math display="block">
@@ -480,7 +480,18 @@
         <figcaption><strong>Figura 2.4:</strong> Matriz de confusión del árbol con criterio de entropía (referencia comparativa). Presenta métricas agregadas idénticas a CART en esta ejecución; ello no demuestra que ambos árboles tengan divisiones internas iguales.</figcaption>
     </figure>
 
-    <p><strong>Estado de C4.5:</strong> el script <code>eva3.py</code> ya incluye el entrenamiento, la evaluación en prueba y el guardado de <code>confusion_c45.png</code>, <code>arbol_C45.png</code> y <code>arbol_C45_resumen.txt</code>. Esas evidencias no se incluyen en esta versión estática hasta ejecutar el pipeline con el CSV real. Para evitar atribuciones erróneas, no se reportan resultados numéricos de C4.5 todavía.</p>
+    <h3>2.5. C4.5: selección, estructura del árbol y evaluación final</h3>
+    <p>En validación interna de 4.800 registros, sin utilizar la partición de prueba, se compararon poda activada/desactivada y umbrales de 0,05 a 0,50. La configuración seleccionada fue <strong>sin poda y con umbral de decisión 0,20</strong>, con F1 positivo de 0,3361 y ROC-AUC de 0,6573 en validación. El árbol de esa validación tenía 53 nodos. Al reentrenar el modelo con los 24.000 registros completos de entrenamiento, se obtuvieron 63 nodos con raíz en EDAD.</p>
+    <figure>
+        <img src="resultados_e3_corregidos/arbol_C45.png" alt="Representación textual parcial del árbol C4.5, con sus ramas principales y probabilidades estimadas.">
+        <figcaption><strong>Figura 2.5:</strong> Ramas iniciales del árbol C4.5, incluyendo tamaño de nodo, prevalencia positiva estimada y predicción del nodo según el umbral validado 0,20. Es un resumen parcial de un árbol de 63 nodos.</figcaption>
+    </figure>
+    <figure>
+        <img src="resultados_e3_corregidos/confusion_c45.png" alt="Matriz de confusión C4.5 para 6.000 casos de prueba.">
+        <figcaption><strong>Figura 2.6:</strong> Matriz de confusión de C4.5 en 6.000 registros independientes: 3.881 verdaderos negativos, 1.160 falsos positivos, 543 falsos negativos y 416 verdaderos positivos.</figcaption>
+    </figure>
+    <p>Sobre prueba independiente, C4.5 obtuvo <strong>Accuracy = 0,7162; Balanced Accuracy = 0,6018; Precision = 0,2640; Recall = 0,4338; F1 = 0,3282; ROC-AUC = 0,6628</strong>. Identificó 416 de los 959 positivos. CART tiene mayor sensibilidad (0,7226) y F1 (0,3549), mientras que C4.5 logra mayor exactitud global (0,7162 frente a 0,5802) y precisión de la clase 1 (0,2640 frente a 0,2352). Esto refleja compromisos diferentes entre falsos positivos y falsos negativos, no superioridad universal de un método.</p>
+    <p>La selección del umbral y la poda quedó registrada en <code>diagnostico_c45.json</code>, la estructura final en <code>estado_c45.json</code> y las ramas en <code>arbol_C45_resumen.txt</code>. Las siete pruebas automatizadas sobre datos sintéticos y la ejecución final sobre SIS respaldan el funcionamiento técnico observado, pero no constituyen validación clínica.</p>
 
     <p>Las métricas obtenidas sitúan el <strong>Accuracy en 58,02%</strong>, la <strong>Balanced Accuracy en 63,78%</strong>, el <strong>Recall en 72,26%</strong>, la <strong>Precisión en 23,52%</strong>, el <strong>F1-score en 0,3549</strong> y el <strong>ROC-AUC en 0,6794</strong>. La variante con criterio de entropía reproduce idénticos guarismos.</p>
 
