@@ -14,6 +14,22 @@
     "prueba": 6000,
     "k_elegido": 5,
     "tasa_positivos": 0.15983333333333333,
+    "c45_validacion": {
+      "poda": false,
+      "umbral": 0.2,
+      "f1_validacion": 0.3360774818401937,
+      "nodos_pre_poda": 53,
+      "nodos_post_poda": 53,
+      "roc_auc_validacion": 0.6572528594764638
+    },
+    "c45_arbol": {
+      "raiz_pre_poda": "EDAD",
+      "nodos_pre_poda": 63,
+      "nodos_finales": 63,
+      "nodos_eliminados": 0,
+      "poda": false,
+      "umbral_validado": 0.2
+    },
     "metricas": [
       {
         "modelo": "Referencia",
@@ -43,13 +59,22 @@
         "roc_auc": 0.679367455891926
       },
       {
+        "modelo": "C45",
+        "accuracy": 0.7161666666666666,
+        "balanced_accuracy": 0.6018360600531326,
+        "precision_1": 0.2639593908629442,
+        "recall_1": 0.4337851929092805,
+        "f1_1": 0.3282051282051282,
+        "roc_auc": 0.6628135214080826
+      },
+      {
         "modelo": "KNN",
-        "accuracy": 0.8071666666666667,
-        "balanced_accuracy": 0.5251131545104906,
-        "precision_1": 0.25853658536585367,
-        "recall_1": 0.1105318039624609,
-        "f1_1": 0.15485756026296568,
-        "roc_auc": 0.5799248043002541
+        "accuracy": 0.8035,
+        "balanced_accuracy": 0.5246198068435285,
+        "precision_1": 0.25,
+        "recall_1": 0.11470281543274244,
+        "f1_1": 0.15725518227305219,
+        "roc_auc": 0.581154760370592
       },
       {
         "modelo": "Logistica",
@@ -65,7 +90,7 @@
   "clustering": {
     "muestra": 20000,
     "k_elegido": 2,
-    "silueta": 0.32247600736977083,
+    "silueta": 0.3224760073707361,
     "perfiles": [
       {
         "CLUSTER_E3": 0,

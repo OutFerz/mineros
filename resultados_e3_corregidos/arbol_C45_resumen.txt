@@ -1,0 +1,17 @@
+DIAGNÓSTICO C4.5: {'raiz_pre_poda': 'EDAD', 'nodos_pre_poda': 63, 'nodos_finales': 63, 'nodos_eliminados': 0, 'poda': False, 'umbral_validado': 0.2}
+
+RAÍZ: n=24,000; positivos=3,836; p1=0.160; pred_nodo=0; divide por EDAD
+  EDAD <= 30.50: n=1,983; positivos=53; p1=0.027; pred_nodo=0; divide por CON_DX_SALUDMENTAL
+    CON_DX_SALUDMENTAL SI: n=425; positivos=28; p1=0.068; pred_nodo=0; divide por CON_DX_OBESIDAD
+      CON_DX_OBESIDAD SI: n=233; positivos=19; p1=0.085; pred_nodo=0; divide por EDAD
+      CON_DX_OBESIDAD SIN_REGISTRO: n=192; positivos=9; p1=0.052; pred_nodo=0
+    CON_DX_SALUDMENTAL SIN_REGISTRO: n=1,558; positivos=25; p1=0.017; pred_nodo=0; divide por EDAD
+      EDAD <= 9.50: n=179; positivos=0; p1=0.006; pred_nodo=0
+      EDAD > 9.50: n=1,379; positivos=25; p1=0.019; pred_nodo=0; divide por EDAD
+  EDAD > 30.50: n=22,017; positivos=3,783; p1=0.172; pred_nodo=0; divide por CON_DX_OBESIDAD
+    CON_DX_OBESIDAD SI: n=14,490; positivos=3,048; p1=0.210; pred_nodo=1; divide por CON_DX_HIPERTENSION
+      CON_DX_HIPERTENSION SI: n=6,707; positivos=1,774; p1=0.265; pred_nodo=1; divide por EDAD
+      CON_DX_HIPERTENSION SIN_REGISTRO: n=7,783; positivos=1,274; p1=0.164; pred_nodo=0; divide por EDAD
+    CON_DX_OBESIDAD SIN_REGISTRO: n=7,527; positivos=735; p1=0.098; pred_nodo=0; divide por CON_DX_HIPERTENSION
+      CON_DX_HIPERTENSION SI: n=2,371; positivos=332; p1=0.140; pred_nodo=0; divide por EDAD
+      CON_DX_HIPERTENSION SIN_REGISTRO: n=5,156; positivos=403; p1=0.078; pred_nodo=0; divide por EDAD

@@ -1,0 +1,8 @@
+{
+  "raiz_pre_poda": "EDAD",
+  "nodos_pre_poda": 63,
+  "nodos_finales": 63,
+  "nodos_eliminados": 0,
+  "poda": false,
+  "umbral_validado": 0.2
+}
