@@ -245,8 +245,10 @@ class C45Classifier(ClassifierMixin, BaseEstimator):
         lineas = []
         def visitar(nodo, etiqueta, nivel):
             prefijo = "  " * nivel
-            pronostico = int(nodo.positivos >= nodo.n/2)
-            linea = f"{prefijo}{etiqueta}: n={nodo.n:,}; positivos={nodo.positivos:,}; clase={pronostico}"
+            probabilidad = (nodo.positivos+1)/(nodo.n+2)
+            pronostico = int(probabilidad >= self.decision_threshold_)
+            linea = (f"{prefijo}{etiqueta}: n={nodo.n:,}; positivos={nodo.positivos:,}; "
+                     f"p1={probabilidad:.3f}; pred_nodo={pronostico}")
             if nodo.hijos:
                 linea += f"; divide por {nodo.atributo}"
             lineas.append(linea)
