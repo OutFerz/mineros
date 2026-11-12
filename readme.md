@@ -232,3 +232,31 @@ Los diagnósticos de regresión (predicciones, residuos y coeficientes) se gener
 `completo.py` y están disponibles como PNG en `salidas/`.
 
 Desarrollado por [OutFerz](https://github.com/OutFerz).
+
+---
+
+## Evaluación 3: clasificación y segmentación
+
+El informe específico de E3 es [informe_ev_3.html](informe_ev_3.html). El script principal de esta fase es **eva3.py** y el algoritmo C4.5 independiente está en **c45_arbol.py**.
+
+### Reproducción con datos reales
+
+1. Colocar el CSV original Afiliados_activos_DM_SIS.csv junto a eva3.py; no subirlo a Git.
+2. Instalar dependencias: python -m pip install -r requirements.txt
+3. Ejecutar: python eva3.py --csv "Afiliados_activos_DM_SIS.csv" --salida "resultados_e3_corregidos"
+
+La salida predeterminada de eva3.py también es resultados_e3_corregidos. **La ejecución reemplaza resultados previos en esa carpeta:** efectuarla únicamente con el CSV correcto y después verificar las métricas e imágenes antes de incorporarlas al informe.
+
+Para clasificación se utiliza una submuestra estratificada de 30.000 registros, dividida 80/20 en entrenamiento y prueba. Se comparan Referencia, CART con Gini, árbol con entropía (no C4.5), C4.5 con gain ratio, K-NN y regresión logística. El nuevo C4.5 conserva categorías originales, admite umbrales continuos y usa poda pesimista aproximada. No pretende ser idéntico al código histórico de Quinlan ni incluye conversión a reglas. Las pruebas del nuevo modelo pueden ejecutarse con python -m unittest discover -s tests -v.
+
+La segmentación K-Means se realiza con 20.000 filas y produce dos gráficos 2D: proyección PCA y Edad versus Atenciones. El coeficiente de silueta publicado (0,3225) señala una separación moderada, no evidencia de perfiles clínicos validados.
+
+La nueva ejecución creará una fila C45 en metricas_clasificacion.csv, la captura confusion_c45.png, el resumen arbol_C45_resumen.txt y el gráfico arbol_C45.png; los archivos actualmente versionados **preceden** a C4.5 y no deben presentarse como resultados de ese algoritmo. El HTML preserva los resultados históricos y explicita esta limitación.
+
+### Fuente, consistencia y privacidad
+
+El documento de Evaluación 2 señala la descarga de Kaggle, atribuyendo el origen al SIS de Perú; falta comprobar la URL exacta, versión, fecha y concordancia con el portal oficial. No atribuir una descarga directa del portal sin esa comprobación.
+
+E3 informó 582.823 registros procesados y E2 informó 570.437. No son la misma muestra: las semillas y las reglas de preprocesamiento no coinciden exactamente. E3 conserva diagnósticos faltantes como SIN_REGISTRO; no equivale a ausencia de enfermedad. Los CSV individuales siguen excluidos de Git mediante .gitignore, admitiéndose únicamente tablas agregadas explícitas.
+
+Antes de entregar: ejecutar python -m py_compile eva3.py c45_arbol.py y contrastar imágenes, CSV de métricas, metadatos_ejecucion.json y texto del HTML con la ejecución real.
