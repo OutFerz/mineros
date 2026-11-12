@@ -231,6 +231,33 @@ def clasificacion(df,salida,n):
     ax.plot([x['k'] for x in filas_k],[x['f1_validacion'] for x in filas_k],marker='o')
     ax.set(xlabel='Número de vecinos (k)',ylabel='F1 positivo, validación',title='Selección de k sin utilizar el conjunto de prueba')
     guardar_fig(salida/'seleccion_k.png')
+    # Selección de poda y umbral exclusivamente mediante validación interna.
+    # Con clases desbalanceadas, el umbral 0.5 puede producir un árbol que
+    # predice únicamente la clase 0, aun cuando sus probabilidades discriminen.
+    opciones_c45=[]
+    for podar in (True, False):
+        candidato=C45Classifier(max_depth=6,min_samples_leaf=100,
+                                confidence_factor=0.25,prune=podar)
+        candidato.fit(Xt,yt)
+        probabilidades=candidato.predict_proba(Xv)[:,1]
+        for umbral in np.linspace(.05,.50,46):
+            pred=(probabilidades >= umbral).astype(int)
+            valor=f1_score(yv,pred,zero_division=0)
+            opciones_c45.append({
+                'poda':bool(podar),'umbral':float(umbral),
+                'f1_validacion':float(valor),
+                'nodos_pre_poda':int(candidato.unpruned_nodes_),
+                'nodos_post_poda':int(candidato.nodes_),
+                'roc_auc_validacion':float(roc_auc_score(yv,probabilidades))
+            })
+    elegido_c45=max(opciones_c45,key=lambda z:(z['f1_validacion'],
+                                      z['roc_auc_validacion'],
+                                      -abs(z['umbral']-.5)))
+    print('C4.5 configuración seleccionada exclusivamente en validación:',elegido_c45)
+    (salida/'diagnostico_c45.json').write_text(
+        json.dumps({'candidatos':opciones_c45,'elegido':elegido_c45},
+                   ensure_ascii=False,indent=2),encoding='utf-8')
+
     modelos={
         'Referencia':DummyClassifier(strategy='most_frequent'),
         'CART':DecisionTreeClassifier(criterion='gini',max_depth=6,min_samples_leaf=100,
@@ -239,7 +266,9 @@ def clasificacion(df,salida,n):
         # No debe denominarse C4.5 completo porque scikit-learn no usa gain ratio.
         'Arbol_entropia':DecisionTreeClassifier(criterion='entropy',max_depth=6,min_samples_leaf=100,
                                       class_weight='balanced',random_state=SEED),
-        'C45':C45Classifier(max_depth=6,min_samples_leaf=100,confidence_factor=0.25),
+        'C45':C45Classifier(max_depth=6,min_samples_leaf=100,
+                            confidence_factor=0.25,prune=elegido_c45['poda'],
+                            threshold=elegido_c45['umbral']),
         'KNN':KNeighborsClassifier(n_neighbors=k,weights='distance',n_jobs=-1),
         'Logistica':LogisticRegression(max_iter=2000,class_weight='balanced',solver='lbfgs',random_state=SEED),
     }
@@ -254,7 +283,17 @@ def clasificacion(df,salida,n):
     tabla=pd.DataFrame(resumen)
     tabla.to_csv(salida/'metricas_clasificacion.csv',index=False)
     # Evidencia C4.5 solo se genera al entrenar con el CSV auténtico.
-    texto=fitted['C45'].resumen_ramas(niveles=3,ramas_por_nodo=3)
+    arbol_c45=fitted['C45']
+    diagnostico={'raiz_pre_poda':arbol_c45.root_feature_before_pruning_,
+                 'nodos_pre_poda':arbol_c45.unpruned_nodes_,
+                 'nodos_finales':arbol_c45.nodes_,
+                 'nodos_eliminados':arbol_c45.pruned_nodes_,
+                 'poda':elegido_c45['poda'],
+                 'umbral_validado':elegido_c45['umbral']}
+    (salida/'estado_c45.json').write_text(
+        json.dumps(diagnostico,ensure_ascii=False,indent=2),encoding='utf-8')
+    texto=(f"DIAGNÓSTICO C4.5: {diagnostico}\n\n" +
+           arbol_c45.resumen_ramas(niveles=3,ramas_por_nodo=3))
     (salida/'arbol_C45_resumen.txt').write_text(texto,encoding='utf-8')
     fig,ax=plt.subplots(figsize=(12,7))
     ax.axis('off')
@@ -296,7 +335,8 @@ def clasificacion(df,salida,n):
     guardar_fig(salida/'coeficientes_logisticos.png')
     pd.DataFrame({'variable':coef.index,'coeficiente':coef.values}).to_csv(salida/'coeficientes_logisticos.csv',index=False)
     return {'muestra':len(d),'entrenamiento':len(Xtr),'prueba':len(Xte),'k_elegido':int(k),
-            'tasa_positivos':float(y.mean()),'metricas':resumen}
+            'tasa_positivos':float(y.mean()),'c45_validacion':elegido_c45,
+            'c45_arbol':diagnostico,'metricas':resumen}
 
 
 def clustering(df,salida,n):
