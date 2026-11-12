@@ -10,6 +10,7 @@
 
 # Ignorar entornos virtuales
 venv/
+.venv/
 env/
 
 # Ignorar archivos compilados de Python
@@ -22,3 +23,7 @@ __pycache__/
 !resultados_e3_corregidos/seleccion_clusters.csv
 !resultados_e3_corregidos/perfiles_cluster.csv
 !resultados_e3_corregidos/coeficientes_logisticos.csv
+
+# Archivos temporales de macOS y revisión local
+.DS_Store
+revision_e3.zip
