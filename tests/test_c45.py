@@ -34,6 +34,27 @@ class TestC45(unittest.TestCase):
         self.assertEqual(p.shape, (2, 2))
         self.assertTrue(np.isfinite(p).all())
 
+    def test_diagnostico_poda_y_umbral(self):
+        m = C45Classifier(max_depth=6, min_samples_leaf=20, prune=False,
+                          threshold=0.20).fit(self.x, self.y)
+        self.assertGreater(m.nodes_, 1)
+        self.assertEqual(m.unpruned_nodes_, m.nodes_)
+        self.assertEqual(m.pruned_nodes_, 0)
+        self.assertIsNotNone(m.root_feature_before_pruning_)
+        p = m.predict_proba(self.x)[:, 1]
+        np.testing.assert_array_equal(m.predict(self.x), (p >= 0.20).astype(int))
+        podado = C45Classifier(max_depth=6, min_samples_leaf=20,
+                               prune=True).fit(self.x, self.y)
+        self.assertLessEqual(podado.nodes_, podado.unpruned_nodes_)
+        self.assertGreaterEqual(podado.pruned_nodes_, 0)
+
+    def test_gain_ratio_numerico_no_simple_ganancia(self):
+        x = pd.DataFrame({"EDAD": [1, 2, 3, 4, 5, 6, 7, 8]*25})
+        y = np.asarray(([0, 0, 0, 0, 1, 1, 1, 1])*25)
+        m = C45Classifier(min_samples_leaf=10, prune=False).fit(x,y)
+        self.assertEqual(m.root_.atributo, "EDAD")
+        self.assertAlmostEqual(m.root_.umbral, 4.5)
+
     def test_parametros_invalidos(self):
         with self.assertRaises(ValueError):
             C45Classifier(confidence_factor=1).fit(self.x, self.y)
